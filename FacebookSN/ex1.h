@@ -12,6 +12,9 @@
 #include "user.h"
 #pragma warning (disable: 4996)
 
+// testing
+
+
 constexpr int MAX_NAME_LEN = 30;
 constexpr int MIN_CONNECTIONS_NUM = 3;
 constexpr int MIN_PAGES_NUM = 3;
