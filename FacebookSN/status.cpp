@@ -5,28 +5,20 @@ using namespace std;
 //********************************************************************************
 
 //c'tor
-Status::Status(char* text) {
+Status::Status(string text) {
 	setTime();
-
-	this->text = new char[strlen(text) + 1];
-	checkMemory(this->text);
-	strcpy(this->text, text);
+	this->text = text;
 }
-
-//d'tor
-Status::~Status() {
-	delete[]text;
-} 
 
 //********************************************************************************
 
 //get funcs: allows access to the class attributes
-Time Status::getTime() const
+const Time Status::getTime() const
 {
 	return time;
 }
 
-char* Status::getStatus() const
+const string Status::getStatus() const
 {
 	return text;
 }

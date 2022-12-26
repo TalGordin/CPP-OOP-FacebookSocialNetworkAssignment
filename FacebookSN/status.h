@@ -9,16 +9,16 @@ class User;
 class Status
 {
 	Time time;
-	char* text = nullptr;
+	string text = nullptr; //TO ASK KEREN - is there a need for std::string?
 	Status(const Status& oldStatus); // copy c'tor
 
 public:
-	Status(char* text); //c'tor
-	~Status(); // d'tor
+	Status(string text); //c'tor
+	// d'tor not needed, string destructs itself
 
 	//get func:
-	Time getTime() const;
-	char* getStatus() const;
+	const Time getTime() const;
+	const string getStatus() const;
 
 	// set func:
 	void setTime();

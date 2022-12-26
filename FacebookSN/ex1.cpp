@@ -180,7 +180,7 @@ void userMenu(User& user, SocialNetwork& system)
 			user.showAllUserStatuses();
 			break;
 		case 3:
-			if (user.getConnections().logSize == 0)
+			if (user.getConnections().size() == 0)
 				cout << "You have no friends!\n";
 			else
 				user.show10LatestFriendsStatuses();
@@ -191,7 +191,7 @@ void userMenu(User& user, SocialNetwork& system)
 				cout << "\n" << user.getName() << " has accepted your friend request!\n";
 			break;
 		case 5:
-			if (user.getConnections().logSize == 0)
+			if (user.getConnections().size() == 0)
 				cout << "You have no friends!\n";
 			else
 			{
@@ -251,7 +251,7 @@ void pageMenu(Page& page, SocialNetwork& system)
 			addFollowerToPage(page, system);
 			break;
 		case 4:
-			if (page.getFollowers().logSize == 0)
+			if (page.getFollowers().size() == 0)
 				cout << "You have no followers!\n";
 			else
 				removeFollowerFromPage(page, system);
@@ -269,7 +269,7 @@ void pageMenu(Page& page, SocialNetwork& system)
 
 User* addUser(SocialNetwork& system) 
 {
-	char name[MAX_NAME_LEN];
+	string name;
 	int day, month, year;
 	User* user = nullptr;
 	bool legalDOB;
@@ -278,7 +278,7 @@ User* addUser(SocialNetwork& system)
 	{
 		cout << "Enter your name (max " << MAX_NAME_LEN << " characters): ";
 		cin.ignore();
-		cin.getline(name, MAX_NAME_LEN);
+		getline(cin, name);
 
 
 		user = system.findUser(name);
@@ -421,7 +421,7 @@ void followPage(User& user, SocialNetwork& system)
 
 void unfollowPage(User& user, SocialNetwork& system)
 {
-	if (user.getFollowedPages().logSize == 0)
+	if (user.getFollowedPages().size() == 0)
 		cout << "You're not following any pages!\n";
 	else
 	{

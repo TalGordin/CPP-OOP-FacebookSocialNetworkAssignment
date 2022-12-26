@@ -4,43 +4,26 @@ using namespace std;
 //************************************************************************************
 
 //c'tor 
-Page::Page(const char* name)
+Page::Page(const string& name)
 {
-	this->name = new char[strlen(name) + 1];
-	checkMemory(this->name);
-	strcpy(this->name, name);
+	this->name = name;
 
-	followers.arrOfUsers = new User * [MIN_FOLLOWERS_NUM];
-	checkMemory(followers.arrOfUsers);
-	followers.phySize = MIN_FOLLOWERS_NUM;
-
-	wall.arrOfStatuses = new Status * [MIN_STATUS_NUM];
-	checkMemory(wall.arrOfStatuses);
-	wall.phySize = MIN_STATUS_NUM;
-}
-
-//d'tor
-Page:: ~Page()
-{
-	delete(name);
-	delete(followers.arrOfUsers);
-	delete(wall.arrOfStatuses);
 }
 
 //********************************************************************************
 
 //get funcs: allows access to the class attributes
-char* Page::getName() const
+const string& Page::getName() const
 {
 	return name;
 }
 
-UsersArr Page::getFollowers() const
+const vector<User*>& Page::getFollowers() const
 {
 	return followers;
 }
 
-StatusesArr Page::getWall() const
+const vector<Status*>& Page::getWall() const
 {
 	return wall;
 }
@@ -48,63 +31,33 @@ StatusesArr Page::getWall() const
 //***********************************************************************************
 
 //set funcs: insert values into class attributes
-void Page::setname(char* newName)
+void Page::setname(string& newName)
 {
-	strcpy(name, newName);
+	name = newName;
 }
 
 void Page::setFollowers(User& newFollower)
 {
-	if (followers.logSize == followers.phySize)
-	{
-		followers.phySize = followers.phySize * 2;
-		reallocFollowers();
-	}
-	followers.logSize++;
-	followers.arrOfUsers[followers.logSize] = &newFollower;
-}
+	if (followers.size() == followers.capacity())
+		followers.reserve(2 * followers.capacity());
 
-void Page::reallocFollowers()
-{
-	followers.phySize *= 2;
-	User** tempArr = new User * [followers.phySize];
-	checkMemory(tempArr);
-	for (int i = 0; i < followers.logSize; i++)
-		tempArr[i] = followers.arrOfUsers[i];
-
-	delete[](followers.arrOfUsers);
-	followers.arrOfUsers = tempArr;
+	followers.push_back(&newFollower);
 }
 
 void Page::setWall(Status& newStatus)
 {
-	if (wall.logSize == wall.phySize)
-	{
-		wall.phySize = wall.phySize * 2;
-		reallocWall();
-	}
-	wall.logSize++;
-	wall.arrOfStatuses[wall.logSize] = &newStatus;
+	if (wall.size() == wall.capacity())
+		wall.reserve(2 * wall.capacity());
+	
+	wall.push_back(&newStatus);
 }
 
-void Page::reallocWall()
+void Page::setStatus(string& text)
 {
-	Status** tempArr = new Status * [wall.phySize];
-	checkMemory(tempArr);
-	for (int i = 0; i < wall.logSize; i++)
-		tempArr[i] = wall.arrOfStatuses[i];
+	Status* newStatus = new Status(text);
+	checkMemory(newStatus);
 
-	delete[](wall.arrOfStatuses);
-	wall.arrOfStatuses = tempArr;
-}
-
-void Page::setStatus(char* text)
-{
-	if (wall.logSize == wall.phySize)
-		reallocWall();
-
-	wall.arrOfStatuses[wall.logSize] = new Status(text);
-	wall.logSize++;
+	setWall(*newStatus);
 }
 
 //********************************************************************
@@ -114,16 +67,20 @@ void Page::setStatus(char* text)
 //Shows all statuses of page
 void Page::showAllStatuses() 
 {
-	int size = wall.logSize;
-	if (size == 0)
+	int size = wall.size();
+	if (size == 0) //Exceptions
 		cout << "You have no statuses on your wall!\n";
 	else
 	{
 		cout << "Showing all statuses for page " << name << ":\n";
 		cout << "~ ~ ~ ~ ~\n\n";
-		for (int i = 0; i < size; i++)
+
+		vector<Status*>::iterator itr = wall.begin();
+		vector<Status*>::iterator itrEnd = wall.end();
+
+		for (; itr != itrEnd; ++itr)
 		{
-			wall.arrOfStatuses[i]->printStatus();
+			(*itr)->printStatus();
 			cout << "\n";
 		}
 		cout << "~ ~ ~ ~ ~\n";
@@ -136,16 +93,15 @@ bool Page::addUserToPageFollowers(User& follower, bool noErrMsg)
 
 	if (searchedUser == nullptr)
 	{
-		if (followers.logSize == followers.phySize)
-			reallocFollowers();
+		if (followers.size() == followers.capacity())
+			followers.reserve(2 * followers.capacity());
 
-		followers.arrOfUsers[followers.logSize] = &follower;
-		followers.logSize++;
+		followers.push_back(&follower);
 		follower.addPageToFollowedPages(*this, true);
 		return true;
 	}
 	else
-		if (!noErrMsg) //Meaning, we're not here because of a loop
+		if (!noErrMsg) //Meaning, we're not here because of a loop //Exception
 		{
 			cout << follower.getName() << " is already following your page!\n";
 			return false;
@@ -155,22 +111,27 @@ bool Page::addUserToPageFollowers(User& follower, bool noErrMsg)
 //removes user from followers of page. When using this function, only send follower.
 bool Page::removeUserFromPageFollowers(User& follower, bool noErrMsg)
 {
-	for (int i = 0; i < followers.logSize; i++)
+	vector<User*>::iterator itr = followers.begin();
+	vector<User*>::iterator itrEnd = followers.end();
+
+	for (; itr != itrEnd; ++itr)
 	{
-		if (strcmp(followers.arrOfUsers[i]->getName(), follower.getName()) == 0)
+		if ((*itr)->getName() == follower.getName())
 		{
-			followers.arrOfUsers[i] = nullptr;
+			(*itr) = nullptr;
 
-			for (int j = i; j < followers.logSize - 1; j++)
-				followers.arrOfUsers[i] = followers.arrOfUsers[i + 1];
+			vector<User*>::iterator itr2 = itr;
 
-			followers.logSize--;
+			for (; itr2 != itrEnd; ++itr2)
+				itr2 = itr2 + 1;
+
+			followers.pop_back();
 			follower.removePageFromFollowedPages(*this, true);
 			return true;
 		}
 	}
 
-	if (!noErrMsg)
+	if (!noErrMsg) //Exceptions
 	{
 		cout << follower.getName() << " isn't following your page!\n";
 		return false;
@@ -180,36 +141,40 @@ bool Page::removeUserFromPageFollowers(User& follower, bool noErrMsg)
 //creates a new status for the page
 void Page::createNewStatus()
 {
-	char text[MAX_STATUS_LEN];
+	string text;
 	cout << "Please type in your status (up to " << MAX_STATUS_LEN << " characters): \n";
 	cin.ignore();
-	cin.getline(text, MAX_STATUS_LEN);
+	getline(cin, text);
 
 	setStatus(text);
-	cout << "\n" << this->name << ", Your new status has been posted!\n\n";
 }
 //searches a follower in followers list. Returns pointer to follower if found, else returns nullptr
-User* Page::findFollower( const char* name)
+User* Page::findFollower(const string& name)
 {
-	for (int i = 0; i < followers.logSize; i++)
-	{
-		if (strcmp(name, followers.arrOfUsers[i]->getName()) == 0)
-			return followers.arrOfUsers[i];
-	}
+	vector<User*>::iterator itr = followers.begin();
+	vector<User*>::iterator itrEnd = followers.end();
+
+	for (; itr != itrEnd; ++itr)
+		if (name == (*itr)->getName())
+			return (*itr);
+
 	return nullptr;
 }
 //prints all followers of page
 void Page::showUsersList()
 {
-	int size = followers.logSize;
-	if (size == 0)
+	int size = followers.size();
+	if (size == 0) //Exceptions
 		cout << "You have no followers!\n";
 	else
 	{
+		vector<User*>::iterator itr = followers.begin();
+		vector<User*>::iterator itrEnd = followers.end();
+
 		cout << name << "'s followers: \n";
 		cout << "~ ~ ~ ~ ~\n";
 		for (int i = 0; i < size; i++)
-			cout << followers.arrOfUsers[i]->getName() << "\n";
+			cout << (*itr)->getName() << "\n";
 		cout << "~ ~ ~ ~ ~\n";
 	}
 }

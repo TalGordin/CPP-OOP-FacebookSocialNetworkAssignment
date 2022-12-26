@@ -10,7 +10,10 @@
 #include "socialNetwork.h"
 #include "page.h"
 #include "user.h"
+#include <vector>
+#include <string>
 #pragma warning (disable: 4996)
+using namespace std;
 
 constexpr int MAX_NAME_LEN = 30;
 constexpr int MIN_CONNECTIONS_NUM = 3;

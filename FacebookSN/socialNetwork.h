@@ -11,8 +11,8 @@ class Status;
 
 class SocialNetwork
 {
-	UsersArr allUsers;
-	PagesArr allPages;
+	vector<User*> allUsers;
+	vector<Page*> allPages;
 	SocialNetwork(const SocialNetwork& facebook);
 
 public:
@@ -20,18 +20,18 @@ public:
 	~SocialNetwork(); // dec'tor
 
 	//get funcs:
-	UsersArr getAllUsers();
-	PagesArr getAllPages();
-	int getUsersAmount();
-	int getPagesAmount();
+	const vector<User*> getAllUsers();
+	const vector<Page*> getAllPages();
+	const int getUsersAmount();
+	const int getPagesAmount();
 
 	//set funcs:
-	User* setUser(int day, int month, int year, char* name);
-	Page* setPage(const char* name);
+	User* setUser(int day, int month, int year, string& name);
+	Page* setPage(const string& name);
 
 	//methods
-	User* findUser(const char* name);
-	Page* findPage(const char* name);
+	User* findUser(const string name);
+	Page* findPage(const string name);
 	void reallocUsersArr();
 	void reallocPagesArr();
 	void showAllAccounts();

@@ -4,49 +4,14 @@ using namespace std;
 //***************************************************************
 
 //c'tor
-User::User(int day, int month, int year, char* name = nullptr) 
+User::User(int day, int month, int year, string name = nullptr) 
 {
-	this->name = insertUserName(name);
+	this->name = name;
 
 	DOB = insertDateOfBirth(day, month, year);
-
-	friendsArr.arrOfUsers = new User * [MIN_CONNECTIONS_NUM];
-	checkMemory(friendsArr.arrOfUsers);
-	friendsArr.phySize = MIN_CONNECTIONS_NUM;
-	friendsArr.logSize = 0;
-
-	followedPages.arrOfPages = new Page * [MIN_CONNECTIONS_NUM];
-	checkMemory(followedPages.arrOfPages);
-	followedPages.phySize = MIN_CONNECTIONS_NUM;
-	followedPages.logSize = 0;
-
-	wall.arrOfStatuses = new Status * [MIN_STATUSES_NUM];
-	checkMemory(wall.arrOfStatuses);
-	wall.phySize = MIN_CONNECTIONS_NUM;
-	wall.logSize = 0;
-}
-
-//d'tor
-User:: ~User()
-{
-	delete(name);
-	delete(wall.arrOfStatuses);
-	delete(friendsArr.arrOfUsers);
-	delete(followedPages.arrOfPages);
-
 }
 
 //insert func
-char* insertUserName(char* tempName)
-{
-	char* name;
-	name = new char[strlen(tempName) + 1];
-	checkMemory(name);
-
-	strcpy(name, tempName);
-
-	return name;
-}
 
 date insertDateOfBirth(int day, int month, int year)
 {
@@ -63,28 +28,28 @@ date insertDateOfBirth(int day, int month, int year)
 
 //get func
 
-char* User::getName() const
+const string& User::getName() const
 {
 	return name;
 }
 
-date User::getDateOfBirth() const
+const date& User::getDateOfBirth() const
 {
 	return DOB;
 }
 
-StatusesArr User::getWall() const
+const vector<Status*>& User::getWall() const
 {
 	return wall;
 }
 
 //gets list of all friends the user has (the connections with other users)
-UsersArr User::getConnections() const
+const vector<User*>& User::getConnections() const
 {
 	return friendsArr;
 }
 
-PagesArr User::getFollowedPages() const
+const vector<Page*>& User::getFollowedPages() const
 {
 	return followedPages;
 }
@@ -92,91 +57,47 @@ PagesArr User::getFollowedPages() const
 //*******************************************************************************************************
 
 //set func 
-void User::setName(char* newName) // remember to free new name 
+void User::setName(string& newName) 
 {
-	strcpy(name, newName);
+	name = newName;
 }
 
-void User::setDateOfBirth(date newDOB)
+void User::setDateOfBirth(date& newDOB)
 {
 	DOB = newDOB;
 }
 
 void User::setWall(Status& newStatus)
 {
-	if (wall.logSize == wall.phySize)
-		reallocWall();
+	if (wall.size() == wall.capacity())
+		wall.reserve(wall.capacity() * 2);
 
-	wall.logSize++;
-	wall.arrOfStatuses[wall.logSize] = &newStatus;
-}
-
-void User::reallocWall()
-{
-	wall.phySize *= 2;
-	Status** tempArr = new Status * [wall.phySize];
-	checkMemory(tempArr);
-	for (int i = 0; i < wall.logSize; i++)
-		tempArr[i] = wall.arrOfStatuses[i];
-
-	delete[](wall.arrOfStatuses);
-	wall.arrOfStatuses = tempArr;
+	wall.push_back(&newStatus);
 }
 
 //adds new connection (friend) to user
 void User::setConnections(User& newFriend)
 {
-	if (friendsArr.logSize == friendsArr.phySize)
-	{
-		friendsArr.phySize = friendsArr.phySize * 2;
-		reallocConnections();
+	if (friendsArr.size() == friendsArr.capacity())
+		friendsArr.reserve(friendsArr.capacity() * 2);
 
-	}
-	friendsArr.arrOfUsers[friendsArr.logSize] = &newFriend;
-	friendsArr.logSize++;
-}
-//reallocs array of user's friends
-void User::reallocConnections()
-{
-	User** tempArr = new User * [friendsArr.phySize];
-	checkMemory(tempArr);
-	for (int i = 0; i < friendsArr.logSize; i++)
-		tempArr[i] = friendsArr.arrOfUsers[i];
-
-	delete[](friendsArr.arrOfUsers);
-	friendsArr.arrOfUsers = tempArr;
+	friendsArr.push_back(&newFriend);
 }
 
 void User::setfollowedPages(Page& newPage)
 {
-	if (followedPages.logSize == followedPages.phySize)
-	{
-		followedPages.phySize = followedPages.phySize * 2;
-		reallocfollowedPages();
+	if (followedPages.size() == followedPages.capacity())
+		followedPages.reserve(followedPages.capacity() * 2);
 
-	}
-	followedPages.logSize++;
-	followedPages.arrOfPages[followedPages.logSize] = &newPage;
+	followedPages.push_back(&newPage);
 }
 
-void User::reallocfollowedPages()
+void User::setStatus(string& text) 
 {
-	Page** tempArr = new Page * [followedPages.phySize];
-	checkMemory(tempArr);
-	for (int i = 0; i < followedPages.logSize; i++)
-		tempArr[i] = followedPages.arrOfPages[i];
+	Status* newStatus = new Status(text);
+	checkMemory(newStatus);
 
-	delete[](followedPages.arrOfPages);
-	followedPages.arrOfPages = tempArr;
-}
-
-void User::setStatus(char* text) 
-{
-	if (wall.logSize == wall.phySize)
-		reallocWall();
-
-	wall.arrOfStatuses[wall.logSize] = new Status(text);
-	wall.logSize++;
+	setWall(*newStatus);
 }
 
 //********************************************************************************************************
@@ -187,12 +108,12 @@ void User::setStatus(char* text)
 bool User::friendRequest(User& requestedUser)
 {
 	User* friendPtr;
-	char friendName[MAX_NAME_LEN];
+	string friendName;
 
-	strcpy(friendName, requestedUser.getName());
+	friendName = requestedUser.getName();
 	friendPtr = findFriend(friendName);
 
-	if (friendPtr != nullptr)
+	if (friendPtr != nullptr) //Exceptions
 	{
 		cout << "You're already friends with " << friendName << "!\n";
 		return  false;
@@ -216,16 +137,20 @@ void User::unfriend(User& reqwestedUser)
 //prints all statuses of user
 void User::showAllUserStatuses()
 {
-	int size = wall.logSize;
-	if (size == 0)
+	int size = wall.size();
+	if (size == 0) //Exceptions
 		cout << "You have no statuses on your wall!\n";
 	else 
 	{
-		cout << "Showing all statuses for user " << name << ":\n";
+		cout << "Showing all statuses for user " << name << ":\n"; //To ask Keren
 		cout << "~ ~ ~ ~ ~\n\n";
-		for (int i = 0; i < size; i++)
+
+		vector<Status*>::iterator itr = wall.begin();
+		vector<Status*>::iterator end = wall.end();
+
+		for (; itr != end; ++itr)
 		{
-			wall.arrOfStatuses[i]->printStatus();
+			(*itr)->printStatus();
 			cout << "\n";
 		}
 		cout << "~ ~ ~ ~ ~\n";
@@ -234,21 +159,29 @@ void User::showAllUserStatuses()
 //show the 10 most recent statuses of each friend the user has
 void User::show10LatestFriendsStatuses()
 {
-	int amountFriends = friendsArr.logSize;
-	for (int i = 0; i < amountFriends; i++)
+	int amountFriends = friendsArr.size();
+
+	vector<User*>::iterator usersItr = friendsArr.begin();
+	vector<User*>::iterator usersItrEnd = friendsArr.end();
+
+	for (; usersItr != usersItrEnd; ++usersItr)
 	{
-		int sizeOfWall = friendsArr.arrOfUsers[i]->getWall().logSize;
-		if (sizeOfWall == 0)
-			cout << friendsArr.arrOfUsers[i]->getName() << " has no statuses.\n\n";
+		int sizeOfWall = (*usersItr)->getWall().size();
+		if (sizeOfWall == 0) //Exceptions
+			cout << (*usersItr)->getName() << " has no statuses.\n\n";
 		else
 		{
-			cout << friendsArr.arrOfUsers[i]->getName() << "'s latest statuses:\n\n";
-			int amountStatuses = friendsArr.arrOfUsers[i]->getWall().logSize;
+			cout << (*usersItr)->getName() << "'s latest statuses:\n\n"; //To Ask Keren
+			int amountStatuses = (*usersItr)->getWall().size();
 
-			for (int j = sizeOfWall - 1 ; j >= sizeOfWall - LATEST_STAT_NUM && amountStatuses > 0; j--, amountStatuses--)
+			vector<Status*> statusesOfFriend = (*usersItr)->getWall();
+			vector<Status*>::iterator statusItr = statusesOfFriend.end();
+
+			for (int j = sizeOfWall - 1 ; j >=  sizeOfWall - LATEST_STAT_NUM && amountStatuses > 0; j--, amountStatuses--)
 			{
-				friendsArr.arrOfUsers[i]->getWall().arrOfStatuses[j]->printStatus();
+				(*statusItr)->printStatus();
 				cout << "\n";
+				++statusItr;
 			}
 		}
 	}
@@ -257,30 +190,43 @@ void User::show10LatestFriendsStatuses()
 //prints all of user's friends
 void User::showAllFriends()
 {
-	int size = friendsArr.logSize;
-	if (size == 0)
+	int size = friendsArr.size();
+	if (size == 0) //Exceptions
 		cout << "You have no friends at the moment.\n";
 	else 
 	{
 		cout << name << "'s friends: \n";
 		cout << "~ ~ ~ ~ ~\n";
-		for (int i = 0; i < size; i++)
-			cout << friendsArr.arrOfUsers[i]->getName() << "\n";
+
+		vector<User*>::iterator itr = friendsArr.begin();
+		vector<User*>::iterator end = friendsArr.end();
+
+		for (; itr != end; ++itr)
+		{
+			(*itr)->getName();
+			cout << "\n";
+		}
 		cout << "~ ~ ~ ~ ~\n";
 	}
 }
 //prints all pages user follows
 void User::showAllFollowedPages()
 {
-	int size = followedPages.logSize;
-	if (size == 0)
+	int size = followedPages.size();
+	if (size == 0) //Exceptions
 		cout << "You're not following any pages at the moment.\n";
 	else
 	{
 		cout << name << "'s followed pages: \n";
 		cout << "~ ~ ~ ~ ~\n";
-		for (int i = 0; i < size; i++)
-			cout << followedPages.arrOfPages[i]->getName() << "\n";
+		vector<Page*>::iterator itr = followedPages.begin();
+		vector<Page*>::iterator end = followedPages.end();
+
+		for (; itr != end; ++itr)
+		{
+			(*itr)->getName();
+			cout << "\n";
+		}
 		cout << "~ ~ ~ ~ ~\n";
 	}
 }
@@ -291,16 +237,15 @@ bool User::addPageToFollowedPages(Page& page, bool noErrMsg)
 
 	if (searchedPage == nullptr)
 	{
-		if (followedPages.logSize == followedPages.phySize)
-			reallocfollowedPages();
+		if (followedPages.size() == followedPages.capacity())
+			followedPages.reserve(2 * followedPages.capacity());
 
-		followedPages.arrOfPages[followedPages.logSize] = &page;
-		followedPages.logSize++;
+		followedPages.push_back(&page);
 		page.addUserToPageFollowers(*this, true);
 		return true;
 	}
 	else
-		if (!noErrMsg) //Meaning, we're not here because of a loop
+		if (!noErrMsg) //Meaning, we're not here because of a loop //Exceptions
 		{
 			cout << "You're already following " << page.getName() << "!\n";
 			return false;
@@ -310,21 +255,26 @@ bool User::addPageToFollowedPages(Page& page, bool noErrMsg)
 //removes a page from followed pages. returns true if succeeds, else returns false.
 bool User::removePageFromFollowedPages(Page& page, bool noErrMsg)
 {
-	for (int i = 0; i < followedPages.logSize; i++)
+	vector<Page*>::iterator itr = followedPages.begin();
+	vector<Page*>::iterator itrEnd = followedPages.end();
+
+	for (; itr != itrEnd; ++itr)
 	{
-		if (strcmp(followedPages.arrOfPages[i]->getName(), page.getName()) == 0)
+		if ((*itr)->getName() == page.getName())
 		{
-			followedPages.arrOfPages[i] = nullptr;
+			(*itr) = nullptr;
 
-			for (int j = i; j < followedPages.logSize - 1; j++)
-				followedPages.arrOfPages[i] = followedPages.arrOfPages[i + 1];
+			vector<Page*>::iterator itr2 = itr;
 
-			followedPages.logSize--;
+			for (; itr2 != itrEnd; ++itr2)
+				itr2 = itr2 + 1;
+
+			followedPages.pop_back();
 			page.removeUserFromPageFollowers(*this, true);
 			return true;
 		}
 	}
-	if (!noErrMsg) //Meaning, we're not here because of a loop
+	if (!noErrMsg) //Meaning, we're not here because of a loop //Exceptions
 	{
 		cout << "You're not following " << page.getName();
 		return false;
@@ -332,49 +282,61 @@ bool User::removePageFromFollowedPages(Page& page, bool noErrMsg)
 	return true;
 }
 //searches array of friends to find a user's name. Returns pointer to user if found, else returns nullptr.
-User* User::findFriend(const char* name) {
-	for (int i = 0; i < friendsArr.logSize; i++)
+User* User::findFriend(const string& name) {
+
+	vector<User*>::iterator itr = friendsArr.begin();
+	vector<User*>::iterator itrEnd = friendsArr.end();
+
+	for (; itr != itrEnd; ++itr)
 	{
-		if (strcmp(name, friendsArr.arrOfUsers[i]->getName()) == 0)
-			return friendsArr.arrOfUsers[i];
+		if (name == (*itr)->getName())
+			return (*itr);
 	}
 	return nullptr;
 }
 //searches array of followed pages to find a page's name. Returns pointer to page if found, else returns nullptr.
-Page* User::findPage(const char* name) {
-	for (int i = 0; i < followedPages.logSize; i++)
+Page* User::findPage(const string& name) {
+	vector<Page*>::iterator itr = followedPages.begin();
+	vector<Page*>::iterator itrEnd = followedPages.end();
+
+	for (; itr != itrEnd; ++itr)
 	{
-		if (strcmp(name, followedPages.arrOfPages[i]->getName()) == 0)
-			return followedPages.arrOfPages[i];
+		if (name == (*itr)->getName())
+			return (*itr);
 	}
 	return nullptr;
 }
 //creates a new status for user.
 void User::createNewStatus()
 {
-	char text[MAX_STATUS_LEN];
+	string text;
 	cout << "Please type in your status (up to " << MAX_STATUS_LEN << " characters): \n";
 	cin.ignore();
-	cin.getline(text, MAX_STATUS_LEN);
+	getline(cin, text);
 
 	setStatus(text);
 }
 //private func that removes a user from another user's friends list.
 void User::unfriendOneSide(User& reqwestedUser)
 {
-	int amountUsers = friendsArr.logSize;
+	int amountUsers = friendsArr.size();
 	bool isFound = false;
-	for (int i = 0; i < amountUsers && !isFound; i++)
+
+	vector<User*>::iterator itr = friendsArr.begin();
+	vector<User*>::iterator itrEnd = friendsArr.end();
+
+	for (;  itr != itrEnd && !isFound; ++itr)
 	{
-		if (strcmp(friendsArr.arrOfUsers[i]->getName(), reqwestedUser.getName()) == 0)
+		if ((*itr)->getName() == reqwestedUser.getName())
 		{
-			for (int j = i; j < amountUsers - 1; j++)
-			{
-				friendsArr.arrOfUsers[i] = friendsArr.arrOfUsers[i + 1];
-			}
+			vector<User*>::iterator itr2 = itr;
+
+			for (; itr2 != itrEnd; ++itr2)
+				itr = itr + 1;
+
 			isFound = true;
 		}
 	}
 
-	friendsArr.logSize--;
+	friendsArr.pop_back();
 }
