@@ -1,9 +1,9 @@
 #include "user.h"
-
+using namespace std;
 //***************************************************************
 
 //c'tor
-User::User(int day, int month, int year, std::string name = nullptr)
+User::User(int day, int month, int year, std::string name)
 {
 	this->name = name;
 
@@ -66,12 +66,14 @@ void User::setDateOfBirth(date& newDOB)
 	DOB = newDOB;
 }
 
-void User::setWall(Status& newStatus)
+void User::setWall(Status& newStatus) //To ask Keren - Should exceptions happen for built-in functions?
 {
+
 	if (wall.size() == wall.capacity())
 		wall.reserve(wall.capacity() * 2);
 
 	wall.push_back(&newStatus);
+
 }
 
 //adds new connection (friend) to user
@@ -306,7 +308,7 @@ Page* User::findPage(const std::string& name) {
 	return nullptr;
 }
 //creates a new status for user.
-void User::createNewStatus()
+void User::createNewStatus() //To ask Keren - should this be a User func or a global func?
 {
 	std::string text;
 	std::cout << "Please type in your status (up to " << MAX_STATUS_LEN << " characters): \n";

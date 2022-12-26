@@ -5,6 +5,8 @@
 #include "user.h"
 #include "status.h"
 #include "socialnetwork.h"
+#include <vector>
+#include <string>
 
 class Status;
 class User;

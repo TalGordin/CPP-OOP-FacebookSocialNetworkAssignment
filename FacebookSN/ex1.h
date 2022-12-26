@@ -25,6 +25,7 @@ constexpr int MIN_FOLLOWERS_NUM = 3;
 constexpr int MIN_STATUS_NUM = 2;
 constexpr int MAX_PAGE_LEN_NAME = 100;
 
+void facebookTerminate();
 
 void checkMemory(void* ptr);
 int getMaxDay(int month);

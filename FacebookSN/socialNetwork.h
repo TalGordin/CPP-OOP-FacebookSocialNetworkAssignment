@@ -4,6 +4,7 @@
 #include "ex1.h"
 #include "Page.h"
 #include "user.h"
+#include <vector>
 
 class User;
 class Page;
@@ -16,8 +17,7 @@ class SocialNetwork
 	//SocialNetwork(const SocialNetwork& facebook);
 
 public:
-	SocialNetwork(); //c'tor
-	~SocialNetwork() = delete; // d'tor
+	SocialNetwork() = default; //c'tor
 
 	//get funcs:
 	const std::vector<User*> getAllUsers();

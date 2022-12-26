@@ -5,11 +5,12 @@
 class Page;
 class SocialNetwork;
 class User;
+#include <string>
 
 class Status
 {
 	Time time;
-	std::string text = nullptr; //TO ASK KEREN - is there a need for std::string?
+	std::string text; //TO ASK KEREN - is there a need for std::string?
 	Status(const Status& oldStatus); // copy c'tor
 
 public:

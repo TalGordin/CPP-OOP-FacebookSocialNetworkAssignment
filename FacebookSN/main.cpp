@@ -1,7 +1,9 @@
 #include "socialnetwork.h"
-
+using namespace std;
 void main()
 {
+	set_terminate(facebookTerminate);
+
 	SocialNetwork system;
 
 	system.initializeFaceBookUsers();
@@ -34,7 +36,7 @@ void main()
 			managePages(system);
 			break;
 		default:
-			std::cout << "Invalid choice! Try again! ";
+			cout << "Invalid choice! Try again! ";
 		}
 
 	} while (input != 0);

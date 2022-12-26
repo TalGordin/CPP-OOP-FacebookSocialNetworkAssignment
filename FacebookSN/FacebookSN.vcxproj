@@ -153,6 +153,7 @@
     <ClInclude Include="status.h" />
     <ClInclude Include="structs.h" />
     <ClInclude Include="user.h" />
+    <ClInclude Include="UserExceptions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

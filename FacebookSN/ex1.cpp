@@ -1,16 +1,25 @@
 #include "ex1.h"
-
+using namespace std;
 //****************** MISCELLANEOUS ******************
 
-void checkMemory(void* ptr) {
+void facebookTerminate()
+{
+	cout << "Facebook has terminated due to an error! Please contact support!\n";
+	exit(1);
+}
+
+void checkMemory(void* ptr) 
+{
 	if (ptr == nullptr) {
 		std::cout << "Memory allocation failed!";
 		exit(1);
 	}
 }
 
-int getMaxDay(int month) {
-	switch (month) {
+int getMaxDay(int month) 
+{
+	switch (month) 
+	{
 	case 1:
 	case 3:
 	case 5:
@@ -268,7 +277,7 @@ void pageMenu(Page& page, SocialNetwork& system)
 
 User* addUser(SocialNetwork& system) 
 {
-	string name;
+	std::string name;
 	int day, month, year;
 	User* user = nullptr;
 	bool legalDOB;

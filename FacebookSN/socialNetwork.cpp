@@ -1,15 +1,5 @@
 #include "socialnetwork.h"
-
-//********************************************************************************
-
-//c'tor
-SocialNetwork::SocialNetwork() 
-{
-	allUsers.push_back(nullptr);
-	allPages.push_back(nullptr);
-} //c'tor
-
-
+using namespace std;
 //********************************************************************************
 
 //get funcs: allows access to the class attributes
@@ -118,13 +108,13 @@ void SocialNetwork::showAllAccounts()
 //For ease of testing, inserts premade users and pages to the social network
 void SocialNetwork::initializeFaceBookUsers()
 {
+	
 // INSERT 3 USERS:
 	std::string name1 = "Avital", name2 = "Archie", name3 = "Bizo";
 
 	setUser(5, 2, 1998, name1);
 	setUser(15, 4, 2021, name2);
 	setUser(7, 6, 2018, name3);
-
 // INSERT 3 PAGES:
 
 	std::string name4 = "Hogwarts", name5 = "Academit TA-Y", name6 = "Microsoft";
@@ -132,7 +122,6 @@ void SocialNetwork::initializeFaceBookUsers()
 	setPage(name4);
 	setPage(name5);
 	setPage(name6);
-	
 // INSERT STATUSES:
 
 //USERS:
@@ -145,7 +134,7 @@ void SocialNetwork::initializeFaceBookUsers()
 	std::string text6 = "Woof Woof :3";
 
 	std::vector<User*>::iterator uItr = allUsers.begin();
-
+	/**/
 	(*uItr)->setStatus(text1);
 	(*uItr)->setStatus(text2);
 
@@ -154,8 +143,8 @@ void SocialNetwork::initializeFaceBookUsers()
 	(*uItr)->setStatus(text4);
 
 	++uItr;
-	(*uItr)->setStatus(text3);
-	(*uItr)->setStatus(text4);
+	(*uItr)->setStatus(text5);
+	(*uItr)->setStatus(text6);
 
 //PAGES:
 
@@ -168,20 +157,18 @@ void SocialNetwork::initializeFaceBookUsers()
 
 	std::vector<Page*>::iterator pItr = allPages.begin();
 
-	(*uItr)->setStatus(text7);
-	(*uItr)->setStatus(text8);
+	(*pItr)->setStatus(text7);
+	(*pItr)->setStatus(text8);
 
-	++uItr;
-	(*uItr)->setStatus(text9);
-	(*uItr)->setStatus(text10);
+	++pItr;
+	(*pItr)->setStatus(text9); 
+	(*pItr)->setStatus(text10);
 
-	++uItr;
-	(*uItr)->setStatus(text11);
-	(*uItr)->setStatus(text12);
-
+	++pItr;
+	(*pItr)->setStatus(text11);
+	(*pItr)->setStatus(text12);
+	
 // CREATING FRIENDSHIPS
-
-	uItr = allUsers.begin();
 
 	std::vector<User*>::iterator itr0, itr1, itr2;
 	itr0 = allUsers.begin();
@@ -191,4 +178,5 @@ void SocialNetwork::initializeFaceBookUsers()
 	(*itr0)->friendRequest(**itr1);
 	(*itr1)->friendRequest(**itr2);
 	(*itr2)->friendRequest(**itr0);
+	
 }

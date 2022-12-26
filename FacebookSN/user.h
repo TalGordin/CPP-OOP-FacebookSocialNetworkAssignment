@@ -9,6 +9,8 @@
 class Page;
 class SocialNetwork;
 class Status;
+#include <vector>
+#include <string>
 
 class User
 {
