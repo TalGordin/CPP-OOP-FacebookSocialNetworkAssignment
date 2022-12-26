@@ -31,7 +31,7 @@ const vector<Status*>& Page::getWall() const
 //***********************************************************************************
 
 //set funcs: insert values into class attributes
-void Page::setname(string& newName)
+void Page::setname(std::string& newName)
 {
 	name = newName;
 }
@@ -52,7 +52,7 @@ void Page::setWall(Status& newStatus)
 	wall.push_back(&newStatus);
 }
 
-void Page::setStatus(string& text)
+void Page::setStatus(std::string& text)
 {
 	Status* newStatus = new Status(text);
 	checkMemory(newStatus);
@@ -69,11 +69,11 @@ void Page::showAllStatuses()
 {
 	int size = wall.size();
 	if (size == 0) //Exceptions
-		cout << "You have no statuses on your wall!\n";
+		std::cout << "You have no statuses on your wall!\n";
 	else
 	{
-		cout << "Showing all statuses for page " << name << ":\n";
-		cout << "~ ~ ~ ~ ~\n\n";
+		std::cout << "Showing all statuses for page " << name << ":\n";
+		std::cout << "~ ~ ~ ~ ~\n\n";
 
 		vector<Status*>::iterator itr = wall.begin();
 		vector<Status*>::iterator itrEnd = wall.end();
@@ -81,9 +81,9 @@ void Page::showAllStatuses()
 		for (; itr != itrEnd; ++itr)
 		{
 			(*itr)->printStatus();
-			cout << "\n";
+			std::cout << "\n";
 		}
-		cout << "~ ~ ~ ~ ~\n";
+		std::cout << "~ ~ ~ ~ ~\n";
 	}
 }
 //adds user to followers of page. When using this function, only send follower.
@@ -103,7 +103,7 @@ bool Page::addUserToPageFollowers(User& follower, bool noErrMsg)
 	else
 		if (!noErrMsg) //Meaning, we're not here because of a loop //Exception
 		{
-			cout << follower.getName() << " is already following your page!\n";
+			std::cout << follower.getName() << " is already following your page!\n";
 			return false;
 		}
 	return true;
@@ -133,7 +133,7 @@ bool Page::removeUserFromPageFollowers(User& follower, bool noErrMsg)
 
 	if (!noErrMsg) //Exceptions
 	{
-		cout << follower.getName() << " isn't following your page!\n";
+		std::cout << follower.getName() << " isn't following your page!\n";
 		return false;
 	}
 	return true;
@@ -142,9 +142,9 @@ bool Page::removeUserFromPageFollowers(User& follower, bool noErrMsg)
 void Page::createNewStatus()
 {
 	string text;
-	cout << "Please type in your status (up to " << MAX_STATUS_LEN << " characters): \n";
-	cin.ignore();
-	getline(cin, text);
+	std::cout << "Please type in your status (up to " << MAX_STATUS_LEN << " characters): \n";
+	std::cin.ignore();
+	getline(std::cin, text);
 
 	setStatus(text);
 }
@@ -165,16 +165,16 @@ void Page::showUsersList()
 {
 	int size = followers.size();
 	if (size == 0) //Exceptions
-		cout << "You have no followers!\n";
+		std::cout << "You have no followers!\n";
 	else
 	{
 		vector<User*>::iterator itr = followers.begin();
 		vector<User*>::iterator itrEnd = followers.end();
 
-		cout << name << "'s followers: \n";
-		cout << "~ ~ ~ ~ ~\n";
+		std::cout << name << "'s followers: \n";
+		std::cout << "~ ~ ~ ~ ~\n";
 		for (int i = 0; i < size; i++)
-			cout << (*itr)->getName() << "\n";
-		cout << "~ ~ ~ ~ ~\n";
+			std::cout << (*itr)->getName() << "\n";
+		std::cout << "~ ~ ~ ~ ~\n";
 	}
 }

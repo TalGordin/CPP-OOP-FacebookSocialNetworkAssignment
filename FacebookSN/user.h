@@ -12,31 +12,31 @@ class Status;
 
 class User
 {
-	string name;
+	std::string name;
 	Date DOB; //date of birth
-	vector<Status*> wall;
-	vector<User*> friendsArr;
-	vector<Page*> followedPages;
+	std::vector<Status*> wall;
+	std::vector<User*> friendsArr;
+	std::vector<Page*> followedPages;
 	User(const User& user); // copy c'tor
 
 public:
-	User(int day, int month, int year, string name); //c'tor
+	User(int day, int month, int year, std::string name); //c'tor
 	~User() = delete;
 
 	//get func
-	const string& getName() const;
+	const std::string& getName() const;
 	const date& getDateOfBirth() const;
-	const vector<Status*>& getWall() const;
-	const vector<User*>& getConnections() const;
-	const vector<Page*>& getFollowedPages() const;
+	const std::vector<Status*>& getWall() const;
+	const std::vector<User*> getConnections() const;
+	const std::vector<Page*> getFollowedPages() const;
 
 	//set func
-	void setName(string& name);
+	void setName(std::string& name);
 	void setDateOfBirth(date& newDOB);
 	void setWall(Status& newStatus);
 	void setConnections(User& newFriend);
 	void setfollowedPages(Page& newPage);
-	void setStatus(string& text);
+	void setStatus(std::string& text);
 
 	// methods
 	void reallocConnections();
@@ -50,8 +50,8 @@ public:
 	void showAllFollowedPages();
 	bool addPageToFollowedPages(Page& page, bool noErrMsg = false); //When using this function, only send page.
 	bool removePageFromFollowedPages(Page& page, bool noErrMsg = false); //When using this function, only send page.
-	User* findFriend(const string& name);
-	Page* findPage(const string& name);
+	User* findFriend(const std::string& name);
+	Page* findPage(const std::string& name);
 	void createNewStatus();
 
 private:

@@ -1,11 +1,10 @@
 #include "ex1.h"
-using namespace std;
 
 //****************** MISCELLANEOUS ******************
 
 void checkMemory(void* ptr) {
 	if (ptr == nullptr) {
-		cout << "Memory allocation failed!";
+		std::cout << "Memory allocation failed!";
 		exit(1);
 	}
 }
@@ -38,12 +37,12 @@ void manageSystem(SocialNetwork& system)
 	int input;
 	do
 	{
-		cout << "Choose an action:\n";
+		std::cout << "Choose an action:\n";
 
-		cout << "1 - Show all existing accounts in the system\n";
-		cout << "0 - Return to main menu\n";
+		std::cout << "1 - Show all existing accounts in the system\n";
+		std::cout << "0 - Return to main menu\n";
 
-		cin >> input;
+		std::cin >> input;
 
 		switch (input)
 		{
@@ -53,7 +52,7 @@ void manageSystem(SocialNetwork& system)
 			system.showAllAccounts();
 			break;
 		default:
-			cout << "Invalid choice! Try again! ";
+			std::cout << "Invalid choice! Try again! ";
 		}
 	} while (input != 0);
 }
@@ -65,18 +64,18 @@ void manageUsers(SocialNetwork& system)
 	{
 		if (system.getUsersAmount() == 0)
 		{
-			cout << "No users exist in the system. Please create a new user: \n";
+			std::cout << "No users exist in the system. Please create a new user: \n";
 			input = 1;
 		}
 		else
 		{
-			cout << "Choose an action:\n";
+			std::cout << "Choose an action:\n";
 
-			cout << "1 - Sign up (Create a new user)\n";
-			cout << "2 - Log in (Choose a user)\n";
-			cout << "0 - Return to main menu\n";
+			std::cout << "1 - Sign up (Create a new user)\n";
+			std::cout << "2 - Log in (Choose a user)\n";
+			std::cout << "0 - Return to main menu\n";
 
-			cin >> input;
+			std::cin >> input;
 		}
 
 		User* user;
@@ -94,7 +93,7 @@ void manageUsers(SocialNetwork& system)
 			userMenu(*user, system);
 			break;
 		default:
-			cout << "Invalid choice! Try again! ";
+			std::cout << "Invalid choice! Try again! ";
 		}
 	} while (input != 0);
 }
@@ -106,18 +105,18 @@ void managePages(SocialNetwork& system)
 	{
 		if (system.getPagesAmount() == 0)
 		{
-			cout << "No pages exist in the system. Please create a new page: \n";
+			std::cout << "No pages exist in the system. Please create a new page: \n";
 			input = 1;
 		}
 		else
 		{
-			cout << "Choose an action:\n";
+			std::cout << "Choose an action:\n";
 
-			cout << "1 - Create a new page\n";
-			cout << "2 - Manage existing page\n";
-			cout << "0 - Return to main menu\n";
+			std::cout << "1 - Create a new page\n";
+			std::cout << "2 - Manage existing page\n";
+			std::cout << "0 - Return to main menu\n";
 
-			cin >> input;
+			std::cin >> input;
 		}
 
 		Page* page;
@@ -135,7 +134,7 @@ void managePages(SocialNetwork& system)
 			pageMenu(*page, system);
 			break;
 		default:
-			cout << "Invalid choice! Try again! ";
+			std::cout << "Invalid choice! Try again! ";
 		}
 
 	} while (input != 0);
@@ -148,55 +147,55 @@ void userMenu(User& user, SocialNetwork& system)
 	int input;
 	bool success;
 
-	cout << "~X~X Welcome, " << user.getName() << "! X~X~\n";
+	std::cout << "~X~X Welcome, " << user.getName() << "! X~X~\n";
 
 	do
 	{
-		cout << "Choose an action:\n";
+		std::cout << "Choose an action:\n";
 
-		cout << "1 - Add a new status\n";
-		cout << "2 - Show all of my statuses\n";
-		cout << "3 - Show the latest statuses from my friends\n";
-		cout << "4 - Send friend request\n";
-		cout << "5 - Unfriend a user\n";
-		cout << "6 - Follow a new page\n";
-		cout << "7 - Unfollow a page\n";
-		cout << "8 - Show friends list\n";
-		cout << "9 - Show followed pages\n";
-		cout << "0 - Log out\n";
+		std::cout << "1 - Add a new status\n";
+		std::cout << "2 - Show all of my statuses\n";
+		std::cout << "3 - Show the latest statuses from my friends\n";
+		std::cout << "4 - Send friend request\n";
+		std::cout << "5 - Unfriend a user\n";
+		std::cout << "6 - Follow a new page\n";
+		std::cout << "7 - Unfollow a page\n";
+		std::cout << "8 - Show friends list\n";
+		std::cout << "9 - Show followed pages\n";
+		std::cout << "0 - Log out\n";
 
-		cin >> input;
+		std::cin >> input;
 
 		switch (input)
 		{
 		case 0:
-			cout << "You logged out of " << user.getName() << ".\n\n";
+			std::cout << "You logged out of " << user.getName() << ".\n\n";
 			break;
 		case 1:
 			user.createNewStatus();
-			cout << "\n" << user.getName() << ", Your new status has been posted!\n\n";
+			std::cout << "\n" << user.getName() << ", Your new status has been posted!\n\n";
 			break;
 		case 2:
 			user.showAllUserStatuses();
 			break;
 		case 3:
 			if (user.getConnections().size() == 0)
-				cout << "You have no friends!\n";
+				std::cout << "You have no friends!\n";
 			else
 				user.show10LatestFriendsStatuses();
 			break;
 		case 4:
 			success = sendFriendRequest(user, system);
 			if (success)
-				cout << "\n" << user.getName() << " has accepted your friend request!\n";
+				std::cout << "\n" << user.getName() << " has accepted your friend request!\n";
 			break;
 		case 5:
 			if (user.getConnections().size() == 0)
-				cout << "You have no friends!\n";
+				std::cout << "You have no friends!\n";
 			else
 			{
 				unfollowFriend(user);
-				cout << "\n" << "You unfriended " << user.getName() << "!\n";
+				std::cout << "\n" << "You unfriended " << user.getName() << "!\n";
 			}
 			break;
 		case 6:
@@ -212,7 +211,7 @@ void userMenu(User& user, SocialNetwork& system)
 			user.showAllFollowedPages();
 			break;
 		default:
-			cout << "Invalid choice! Try again! ";
+			std::cout << "Invalid choice! Try again! ";
 		}
 	} while (input != 0);
 }
@@ -221,25 +220,25 @@ void pageMenu(Page& page, SocialNetwork& system)
 {
 	int input;
 
-	cout << "~X~X You are now logged into " << page.getName() << "! X~X~\n";
+	std::cout << "~X~X You are now logged into " << page.getName() << "! X~X~\n";
 
 	do
 	{
-		cout << "Choose an action:\n";
+		std::cout << "Choose an action:\n";
 
-		cout << "1 - Add a new status\n";
-		cout << "2 - Show all of my statuses\n";
-		cout << "3 - Add a new follower\n";
-		cout << "4 - Remove an existing follower\n";
-		cout << "5 - Show followers list\n";
-		cout << "0 - Log out\n";
+		std::cout << "1 - Add a new status\n";
+		std::cout << "2 - Show all of my statuses\n";
+		std::cout << "3 - Add a new follower\n";
+		std::cout << "4 - Remove an existing follower\n";
+		std::cout << "5 - Show followers list\n";
+		std::cout << "0 - Log out\n";
 
-		cin >> input;
+		std::cin >> input;
 
 		switch (input)
 		{
 		case 0:
-			cout << "You logged out of " << page.getName() << ".\n\n";
+			std::cout << "You logged out of " << page.getName() << ".\n\n";
 			break;
 		case 1:
 			page.createNewStatus();
@@ -252,7 +251,7 @@ void pageMenu(Page& page, SocialNetwork& system)
 			break;
 		case 4:
 			if (page.getFollowers().size() == 0)
-				cout << "You have no followers!\n";
+				std::cout << "You have no followers!\n";
 			else
 				removeFollowerFromPage(page, system);
 			break;
@@ -260,7 +259,7 @@ void pageMenu(Page& page, SocialNetwork& system)
 			page.showUsersList();
 			break;
 		default:
-			cout << "Invalid choice! Try again! ";
+			std::cout << "Invalid choice! Try again! ";
 		}
 	} while (input != 0);
 }
@@ -276,22 +275,22 @@ User* addUser(SocialNetwork& system)
 
 	do 
 	{
-		cout << "Enter your name (max " << MAX_NAME_LEN << " characters): ";
-		cin.ignore();
-		getline(cin, name);
+		std::cout << "Enter your name (max " << MAX_NAME_LEN << " characters): ";
+		std::cin.ignore();
+		getline(std::cin, name);
 
 
 		user = system.findUser(name);
 		if (user != nullptr)
-			cout << "The user " << name << " already exists on Facebook! Please select a different name. \n";
+			std::cout << "The user " << name << " already exists on Facebook! Please select a different name. \n";
 	} while (user != nullptr);
 
 	do {
-		cout << "Please enter your date of birth in the following format: <day> <month> <year> \n";
-		cin >> day >> month >> year;
+		std::cout << "Please enter your date of birth in the following format: <day> <month> <year> \n";
+		std::cin >> day >> month >> year;
 
 		if ((year < 1900 || year > 2022) || (month < 1 || month > 12) || (day < 1 || day > getMaxDay(month))) {
-			cout << "Error! Invalid date entered!\n";
+			std::cout << "Error! Invalid date entered!\n";
 			legalDOB = false;
 		}
 		else
@@ -304,16 +303,16 @@ User* addUser(SocialNetwork& system)
 User* findUser(SocialNetwork& system) {
 	char name[MAX_NAME_LEN];
 	User* userPtr;
-	cin.ignore(); //Get rid of buffer chars if there are any
+	std::cin.ignore(); //Get rid of buffer chars if there are any
 	do
 	{
-		cout << "Choose a user: ";
-		cin.getline(name, MAX_NAME_LEN);
+		std::cout << "Choose a user: ";
+		std::cin.getline(name, MAX_NAME_LEN);
 
  		userPtr = system.findUser(name);
 
 		if (userPtr == nullptr)
-			cout << "\nUser not found! Try again!\n";
+			std::cout << "\nUser not found! Try again!\n";
 	} while (userPtr == nullptr);
 	return userPtr;
 }
@@ -324,17 +323,17 @@ bool sendFriendRequest(User& user, SocialNetwork& system)
 	User* friendPtr;
 	User* alreadyFriends;
 	bool validInput;
-	cin.ignore(); //In case of chars in buffer
+	std::cin.ignore(); //In case of chars in buffer
 	do 
 	{
 		validInput = true;
-		cout << "Choose a user to send a friend request to: ";
-		cin.getline(friendName, MAX_NAME_LEN);
+		std::cout << "Choose a user to send a friend request to: ";
+		std::cin.getline(friendName, MAX_NAME_LEN);
 
 		friendPtr = system.findUser(friendName);
 		if (friendPtr == nullptr) 
 		{
-			cout << "User not found! Please try again.\n";
+			std::cout << "User not found! Please try again.\n";
 			validInput = false;
 		}
 		
@@ -347,16 +346,16 @@ void unfollowFriend(User& user)
 {
 	char friendName[MAX_NAME_LEN];
 	User* friendPtr = nullptr;
-	cin.ignore();
+	std::cin.ignore();
 	do
 	{
-		cout << "Choose a user to unfriend: ";
-		cin.getline(friendName, MAX_NAME_LEN);
+		std::cout << "Choose a user to unfriend: ";
+		std::cin.getline(friendName, MAX_NAME_LEN);
 
 		friendPtr = user.findFriend(friendName);
 
 		if (friendPtr == NULL)
-			cout << "User not found in friends list! Please try again.\n";
+			std::cout << "User not found in friends list! Please try again.\n";
 
 	} while (friendPtr == nullptr);
 
@@ -368,15 +367,15 @@ void unfollowFriend(User& user)
 Page* addPage(SocialNetwork& system) {
 	char name[MAX_NAME_LEN];
 	Page* page = nullptr;
-	cin.ignore(); //gets chars from buffer
+	std::cin.ignore(); //gets chars from buffer
 	do 
 	{
-		cout << "Enter your page's name (max " << MAX_NAME_LEN << " characters): ";
-		cin.getline(name, MAX_NAME_LEN);
+		std::cout << "Enter your page's name (max " << MAX_NAME_LEN << " characters): ";
+		std::cin.getline(name, MAX_NAME_LEN);
 
 		page = system.findPage(name);
 		if (page != nullptr)
-			cout << "The page " << name << "already exists on Facebook! Please select a different name. \n";
+			std::cout << "The page " << name << "already exists on Facebook! Please select a different name. \n";
 	} while (page != nullptr);
 
 	return system.setPage(name);
@@ -385,16 +384,16 @@ Page* addPage(SocialNetwork& system) {
 Page* findPage(SocialNetwork& system) {
 	char name[MAX_NAME_LEN];
 	Page* pagePtr;
-	cin.ignore(); //In case of chars in buffer
+	std::cin.ignore(); //In case of chars in buffer
 	do
 	{
-		cout << "Choose a page: ";
-		cin.getline(name, MAX_NAME_LEN);
+		std::cout << "Choose a page: ";
+		std::cin.getline(name, MAX_NAME_LEN);
 
 		pagePtr = system.findPage(name);
 
 		if (pagePtr == nullptr)
-			cout << "\nPage not found! Try again!\n";
+			std::cout << "\nPage not found! Try again!\n";
 	} while (pagePtr == nullptr);
 	return pagePtr;
 }
@@ -403,45 +402,45 @@ void followPage(User& user, SocialNetwork& system)
 {
 	char pageName[MAX_NAME_LEN];
 	Page* pagePtr;
-	cin.ignore(); //In case of chars in buffer
+	std::cin.ignore(); //In case of chars in buffer
 	do
 	{
-		cout << "Please enter the page you'd like to follow: ";
-		cin.getline(pageName, MAX_NAME_LEN);
+		std::cout << "Please enter the page you'd like to follow: ";
+		std::cin.getline(pageName, MAX_NAME_LEN);
 
 		pagePtr = system.findPage(pageName);
 		if (pagePtr == nullptr)
-			cout << "Page not found! Please try again.\n";
+			std::cout << "Page not found! Please try again.\n";
 
 	} while (pagePtr == nullptr);
 
 	if (user.addPageToFollowedPages(*pagePtr))
-		cout << "You are now following " << pageName << "!\n";
+		std::cout << "You are now following " << pageName << "!\n";
 }
 
 void unfollowPage(User& user, SocialNetwork& system)
 {
 	if (user.getFollowedPages().size() == 0)
-		cout << "You're not following any pages!\n";
+		std::cout << "You're not following any pages!\n";
 	else
 	{
 		char pageName[MAX_NAME_LEN];
 		Page* pagePtr = nullptr;
-		cin.ignore(); //In case of chars in buffer
+		std::cin.ignore(); //In case of chars in buffer
 		do
 		{
-			cout << "Choose a page to unfollow: ";
-			cin.getline(pageName, MAX_NAME_LEN);
+			std::cout << "Choose a page to unfollow: ";
+			std::cin.getline(pageName, MAX_NAME_LEN);
 
 			pagePtr = user.findPage(pageName);
 
 			if (pagePtr == NULL)
-				cout << "Page not found in followed pages list! Please try again.\n";
+				std::cout << "Page not found in followed pages list! Please try again.\n";
 
 		} while (pagePtr == nullptr);
 
 		if (user.removePageFromFollowedPages(*pagePtr))
-			cout << "You are no longer following " << pageName << "!\n";
+			std::cout << "You are no longer following " << pageName << "!\n";
 	}
 }
 
@@ -450,47 +449,47 @@ void addFollowerToPage(Page& page, SocialNetwork& system) {
 	User* followerPtr = nullptr;
 	User* alreadyFollows;
 	bool validInput;
-	cin.ignore(); //In case of chars in buffer
+	std::cin.ignore(); //In case of chars in buffer
 	do
 	{
 		validInput = true;
-		cout << "Choose a user to follow your page: ";
-		cin.getline(followerName, MAX_NAME_LEN);
+		std::cout << "Choose a user to follow your page: ";
+		std::cin.getline(followerName, MAX_NAME_LEN);
 
 		followerPtr = system.findUser(followerName);
 		if (followerPtr == nullptr) {
-			cout << "User not found! Please try again.\n";
+			std::cout << "User not found! Please try again.\n";
 			validInput = false;
 		}
 		alreadyFollows = page.findFollower(followerName);
 		if (alreadyFollows != nullptr) {
-			cout << followerName << " is already following you! Please try again.\n";
+			std::cout << followerName << " is already following you! Please try again.\n";
 			validInput = false;
 		}
 	} while (!validInput);
 
 	if (page.addUserToPageFollowers(*followerPtr))
-		cout << followerName << " is now following your page!\n";
+		std::cout << followerName << " is now following your page!\n";
 }
 
 void removeFollowerFromPage(Page& page, SocialNetwork& system)
 {
 	char followerName[MAX_NAME_LEN];
 	User* followerPtr = nullptr;
-	cin.ignore(); //gets chars from buffer
+	std::cin.ignore(); //gets chars from buffer
 	do
 	{
-		cout << "Choose a user to remove from followers: ";
-		cin.getline(followerName, MAX_NAME_LEN);
+		std::cout << "Choose a user to remove from followers: ";
+		std::cin.getline(followerName, MAX_NAME_LEN);
 
 		followerPtr = page.findFollower(followerName);
 
 		if (followerPtr == NULL)
-			cout << "User not found in followers list! Please try again.\n";
+			std::cout << "User not found in followers list! Please try again.\n";
 
 	} while (followerPtr == nullptr);
 
 	page.removeUserFromPageFollowers(*followerPtr);
 
-	cout << followerName << " is no longer following your page!\n";
+	std::cout << followerName << " is no longer following your page!\n";
 }

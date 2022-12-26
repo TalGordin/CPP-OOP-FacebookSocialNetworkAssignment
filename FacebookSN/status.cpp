@@ -1,11 +1,9 @@
 #include "status.h"
-#include "ex1.h"
-using namespace std;
 
 //********************************************************************************
 
 //c'tor
-Status::Status(string text) {
+Status::Status(std::string text) {
 	setTime();
 	this->text = text;
 }
@@ -18,7 +16,7 @@ const Time Status::getTime() const
 	return time;
 }
 
-const string Status::getStatus() const
+const std::string Status::getStatus() const
 {
 	return text;
 }
@@ -45,9 +43,9 @@ void Status::setTime()
 //prints the status
 void Status::printStatus()
 {
-	cout << "Created on: " << std::setfill('0') << std::setw(2) << time.date.day << "/" << std::setfill('0') << std::setw(2) << time.date.month << "/"
+	std::cout << "Created on: " << std::setfill('0') << std::setw(2) << time.date.day << "/" << std::setfill('0') << std::setw(2) << time.date.month << "/"
 		<< time.date.year << " at ";
-	cout << std::setfill('0') << std::setw(2) << time.hours << ":";
-	cout << std::setfill('0') << std::setw(2) << time.minutes << ".\n";
-	cout << "\"" << text << "\"\n";
+	std::cout << std::setfill('0') << std::setw(2) << time.hours << ":";
+	std::cout << std::setfill('0') << std::setw(2) << time.minutes << ".\n";
+	std::cout << "\"" << text << "\"\n";
 }

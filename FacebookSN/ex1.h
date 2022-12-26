@@ -13,7 +13,6 @@
 #include <vector>
 #include <string>
 #pragma warning (disable: 4996)
-using namespace std;
 
 constexpr int MAX_NAME_LEN = 30;
 constexpr int MIN_CONNECTIONS_NUM = 3;
@@ -48,5 +47,5 @@ void unfollowPage(User& user, SocialNetwork& system);
 void addFollowerToPage(Page& page, SocialNetwork& system);
 void removeFollowerFromPage(Page& page, SocialNetwork& system);
 date insertDateOfBirth(int day, int month, int year);
-char* insertUserName(char* tempName);
+//char* insertUserName(char* tempName);
 #endif

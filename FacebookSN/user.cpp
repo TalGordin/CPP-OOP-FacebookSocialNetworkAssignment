@@ -1,10 +1,9 @@
 #include "user.h"
-using namespace std;
 
 //***************************************************************
 
 //c'tor
-User::User(int day, int month, int year, string name = nullptr) 
+User::User(int day, int month, int year, std::string name = nullptr)
 {
 	this->name = name;
 
@@ -28,7 +27,7 @@ date insertDateOfBirth(int day, int month, int year)
 
 //get func
 
-const string& User::getName() const
+const std::string& User::getName() const
 {
 	return name;
 }
@@ -38,18 +37,18 @@ const date& User::getDateOfBirth() const
 	return DOB;
 }
 
-const vector<Status*>& User::getWall() const
+const std::vector<Status*>& User::getWall() const
 {
 	return wall;
 }
 
 //gets list of all friends the user has (the connections with other users)
-const vector<User*>& User::getConnections() const
+const std::vector<User*> User::getConnections() const
 {
 	return friendsArr;
 }
 
-const vector<Page*>& User::getFollowedPages() const
+const std::vector<Page*> User::getFollowedPages() const
 {
 	return followedPages;
 }
@@ -57,7 +56,7 @@ const vector<Page*>& User::getFollowedPages() const
 //*******************************************************************************************************
 
 //set func 
-void User::setName(string& newName) 
+void User::setName(std::string& newName)
 {
 	name = newName;
 }
@@ -92,7 +91,7 @@ void User::setfollowedPages(Page& newPage)
 	followedPages.push_back(&newPage);
 }
 
-void User::setStatus(string& text) 
+void User::setStatus(std::string& text)
 {
 	Status* newStatus = new Status(text);
 	checkMemory(newStatus);
@@ -108,19 +107,19 @@ void User::setStatus(string& text)
 bool User::friendRequest(User& requestedUser)
 {
 	User* friendPtr;
-	string friendName;
+	std::string friendName;
 
 	friendName = requestedUser.getName();
 	friendPtr = findFriend(friendName);
 
 	if (friendPtr != nullptr) //Exceptions
 	{
-		cout << "You're already friends with " << friendName << "!\n";
+		std::cout << "You're already friends with " << friendName << "!\n";
 		return  false;
 	}
 	if (friendPtr == this)
 	{
-		cout << "You can't send a friendship request to yourself!\n";
+		std::cout << "You can't send a friendship request to yourself!\n";
 		return false;
 	}
 
@@ -139,21 +138,21 @@ void User::showAllUserStatuses()
 {
 	int size = wall.size();
 	if (size == 0) //Exceptions
-		cout << "You have no statuses on your wall!\n";
+		std::cout << "You have no statuses on your wall!\n";
 	else 
 	{
-		cout << "Showing all statuses for user " << name << ":\n"; //To ask Keren
-		cout << "~ ~ ~ ~ ~\n\n";
+		std::cout << "Showing all statuses for user " << name << ":\n"; //To ask Keren
+		std::cout << "~ ~ ~ ~ ~\n\n";
 
-		vector<Status*>::iterator itr = wall.begin();
-		vector<Status*>::iterator end = wall.end();
+		std::vector<Status*>::iterator itr = wall.begin();
+		std::vector<Status*>::iterator end = wall.end();
 
 		for (; itr != end; ++itr)
 		{
 			(*itr)->printStatus();
-			cout << "\n";
+			std::cout << "\n";
 		}
-		cout << "~ ~ ~ ~ ~\n";
+		std::cout << "~ ~ ~ ~ ~\n";
 	}
 }
 //show the 10 most recent statuses of each friend the user has
@@ -161,26 +160,26 @@ void User::show10LatestFriendsStatuses()
 {
 	int amountFriends = friendsArr.size();
 
-	vector<User*>::iterator usersItr = friendsArr.begin();
-	vector<User*>::iterator usersItrEnd = friendsArr.end();
+	std::vector<User*>::iterator usersItr = friendsArr.begin();
+	std::vector<User*>::iterator usersItrEnd = friendsArr.end();
 
 	for (; usersItr != usersItrEnd; ++usersItr)
 	{
 		int sizeOfWall = (*usersItr)->getWall().size();
 		if (sizeOfWall == 0) //Exceptions
-			cout << (*usersItr)->getName() << " has no statuses.\n\n";
+			std::cout << (*usersItr)->getName() << " has no statuses.\n\n";
 		else
 		{
-			cout << (*usersItr)->getName() << "'s latest statuses:\n\n"; //To Ask Keren
+			std::cout << (*usersItr)->getName() << "'s latest statuses:\n\n"; //To Ask Keren
 			int amountStatuses = (*usersItr)->getWall().size();
 
-			vector<Status*> statusesOfFriend = (*usersItr)->getWall();
-			vector<Status*>::iterator statusItr = statusesOfFriend.end();
+			std::vector<Status*> statusesOfFriend = (*usersItr)->getWall();
+			std::vector<Status*>::iterator statusItr = statusesOfFriend.end();
 
 			for (int j = sizeOfWall - 1 ; j >=  sizeOfWall - LATEST_STAT_NUM && amountStatuses > 0; j--, amountStatuses--)
 			{
 				(*statusItr)->printStatus();
-				cout << "\n";
+				std::cout << "\n";
 				++statusItr;
 			}
 		}
@@ -192,21 +191,21 @@ void User::showAllFriends()
 {
 	int size = friendsArr.size();
 	if (size == 0) //Exceptions
-		cout << "You have no friends at the moment.\n";
+		std::cout << "You have no friends at the moment.\n";
 	else 
 	{
-		cout << name << "'s friends: \n";
-		cout << "~ ~ ~ ~ ~\n";
+		std::cout << name << "'s friends: \n";
+		std::cout << "~ ~ ~ ~ ~\n";
 
-		vector<User*>::iterator itr = friendsArr.begin();
-		vector<User*>::iterator end = friendsArr.end();
+		std::vector<User*>::iterator itr = friendsArr.begin();
+		std::vector<User*>::iterator end = friendsArr.end();
 
 		for (; itr != end; ++itr)
 		{
 			(*itr)->getName();
-			cout << "\n";
+			std::cout << "\n";
 		}
-		cout << "~ ~ ~ ~ ~\n";
+		std::cout << "~ ~ ~ ~ ~\n";
 	}
 }
 //prints all pages user follows
@@ -214,20 +213,20 @@ void User::showAllFollowedPages()
 {
 	int size = followedPages.size();
 	if (size == 0) //Exceptions
-		cout << "You're not following any pages at the moment.\n";
+		std::cout << "You're not following any pages at the moment.\n";
 	else
 	{
-		cout << name << "'s followed pages: \n";
-		cout << "~ ~ ~ ~ ~\n";
-		vector<Page*>::iterator itr = followedPages.begin();
-		vector<Page*>::iterator end = followedPages.end();
+		std::cout << name << "'s followed pages: \n";
+		std::cout << "~ ~ ~ ~ ~\n";
+		std::vector<Page*>::iterator itr = followedPages.begin();
+		std::vector<Page*>::iterator end = followedPages.end();
 
 		for (; itr != end; ++itr)
 		{
 			(*itr)->getName();
-			cout << "\n";
+			std::cout << "\n";
 		}
-		cout << "~ ~ ~ ~ ~\n";
+		std::cout << "~ ~ ~ ~ ~\n";
 	}
 }
 //adds a new page to follow. returns true if succeeds, else returns false.
@@ -247,7 +246,7 @@ bool User::addPageToFollowedPages(Page& page, bool noErrMsg)
 	else
 		if (!noErrMsg) //Meaning, we're not here because of a loop //Exceptions
 		{
-			cout << "You're already following " << page.getName() << "!\n";
+			std::cout << "You're already following " << page.getName() << "!\n";
 			return false;
 		}
 	return true;
@@ -255,8 +254,8 @@ bool User::addPageToFollowedPages(Page& page, bool noErrMsg)
 //removes a page from followed pages. returns true if succeeds, else returns false.
 bool User::removePageFromFollowedPages(Page& page, bool noErrMsg)
 {
-	vector<Page*>::iterator itr = followedPages.begin();
-	vector<Page*>::iterator itrEnd = followedPages.end();
+	std::vector<Page*>::iterator itr = followedPages.begin();
+	std::vector<Page*>::iterator itrEnd = followedPages.end();
 
 	for (; itr != itrEnd; ++itr)
 	{
@@ -264,7 +263,7 @@ bool User::removePageFromFollowedPages(Page& page, bool noErrMsg)
 		{
 			(*itr) = nullptr;
 
-			vector<Page*>::iterator itr2 = itr;
+			std::vector<Page*>::iterator itr2 = itr;
 
 			for (; itr2 != itrEnd; ++itr2)
 				itr2 = itr2 + 1;
@@ -276,16 +275,16 @@ bool User::removePageFromFollowedPages(Page& page, bool noErrMsg)
 	}
 	if (!noErrMsg) //Meaning, we're not here because of a loop //Exceptions
 	{
-		cout << "You're not following " << page.getName();
+		std::cout << "You're not following " << page.getName();
 		return false;
 	}
 	return true;
 }
 //searches array of friends to find a user's name. Returns pointer to user if found, else returns nullptr.
-User* User::findFriend(const string& name) {
+User* User::findFriend(const std::string& name) {
 
-	vector<User*>::iterator itr = friendsArr.begin();
-	vector<User*>::iterator itrEnd = friendsArr.end();
+	std::vector<User*>::iterator itr = friendsArr.begin();
+	std::vector<User*>::iterator itrEnd = friendsArr.end();
 
 	for (; itr != itrEnd; ++itr)
 	{
@@ -295,9 +294,9 @@ User* User::findFriend(const string& name) {
 	return nullptr;
 }
 //searches array of followed pages to find a page's name. Returns pointer to page if found, else returns nullptr.
-Page* User::findPage(const string& name) {
-	vector<Page*>::iterator itr = followedPages.begin();
-	vector<Page*>::iterator itrEnd = followedPages.end();
+Page* User::findPage(const std::string& name) {
+	std::vector<Page*>::iterator itr = followedPages.begin();
+	std::vector<Page*>::iterator itrEnd = followedPages.end();
 
 	for (; itr != itrEnd; ++itr)
 	{
@@ -309,10 +308,10 @@ Page* User::findPage(const string& name) {
 //creates a new status for user.
 void User::createNewStatus()
 {
-	string text;
-	cout << "Please type in your status (up to " << MAX_STATUS_LEN << " characters): \n";
-	cin.ignore();
-	getline(cin, text);
+	std::string text;
+	std::cout << "Please type in your status (up to " << MAX_STATUS_LEN << " characters): \n";
+	std::cin.ignore();
+	getline(std::cin, text);
 
 	setStatus(text);
 }
@@ -322,14 +321,14 @@ void User::unfriendOneSide(User& reqwestedUser)
 	int amountUsers = friendsArr.size();
 	bool isFound = false;
 
-	vector<User*>::iterator itr = friendsArr.begin();
-	vector<User*>::iterator itrEnd = friendsArr.end();
+	std::vector<User*>::iterator itr = friendsArr.begin();
+	std::vector<User*>::iterator itrEnd = friendsArr.end();
 
 	for (;  itr != itrEnd && !isFound; ++itr)
 	{
 		if ((*itr)->getName() == reqwestedUser.getName())
 		{
-			vector<User*>::iterator itr2 = itr;
+			std::vector<User*>::iterator itr2 = itr;
 
 			for (; itr2 != itrEnd; ++itr2)
 				itr = itr + 1;

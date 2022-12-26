@@ -1,5 +1,4 @@
 #include "socialnetwork.h"
-using namespace std;
 
 void main()
 {
@@ -8,18 +7,18 @@ void main()
 	system.initializeFaceBookUsers();
 
 	int input;
-	cout << "Welcome to <FaceBook> (not affiliated with Meta)!\n";
+	std::cout << "Welcome to <FaceBook> (not affiliated with Meta)!\n";
 
 	do
 	{
-		cout << "Please choose an action:\n";
+		std::cout << "Please choose an action:\n";
 
-		cout << "1 - Manage system\n";
-		cout << "2 - Manage users\n";
-		cout << "3 - Manage pages\n";
-		cout << "0 - Exit\n";
+		std::cout << "1 - Manage system\n";
+		std::cout << "2 - Manage users\n";
+		std::cout << "3 - Manage pages\n";
+		std::cout << "0 - Exit\n";
 
-		cin >> input;
+		std::cin >> input;
 
 		switch (input)
 		{
@@ -35,7 +34,7 @@ void main()
 			managePages(system);
 			break;
 		default:
-			cout << "Invalid choice! Try again! ";
+			std::cout << "Invalid choice! Try again! ";
 		}
 
 	} while (input != 0);

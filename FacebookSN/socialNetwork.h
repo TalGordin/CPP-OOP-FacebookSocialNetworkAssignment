@@ -11,27 +11,27 @@ class Status;
 
 class SocialNetwork
 {
-	vector<User*> allUsers;
-	vector<Page*> allPages;
-	SocialNetwork(const SocialNetwork& facebook);
+	std::vector<User*> allUsers;
+	std::vector<Page*> allPages;
+	//SocialNetwork(const SocialNetwork& facebook);
 
 public:
 	SocialNetwork(); //c'tor
-	~SocialNetwork(); // dec'tor
+	~SocialNetwork() = delete; // d'tor
 
 	//get funcs:
-	const vector<User*> getAllUsers();
-	const vector<Page*> getAllPages();
+	const std::vector<User*> getAllUsers();
+	const std::vector<Page*> getAllPages();
 	const int getUsersAmount();
 	const int getPagesAmount();
 
 	//set funcs:
-	User* setUser(int day, int month, int year, string& name);
-	Page* setPage(const string& name);
+	User* setUser(int day, int month, int year, std::string& name);
+	Page* setPage(const std::string& name);
 
 	//methods
-	User* findUser(const string name);
-	Page* findPage(const string name);
+	User* findUser(const std::string name);
+	Page* findPage(const std::string name);
 	void reallocUsersArr();
 	void reallocPagesArr();
 	void showAllAccounts();

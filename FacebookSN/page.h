@@ -12,25 +12,25 @@ class SocialNetwork;
 
 class Page
 {
-	string name;
-	vector<User*> followers;
-	vector<Status*> wall;
+	std::string name;
+	std::vector<User*> followers;
+	std::vector<Status*> wall;
 	Page(const Page& copiedPage); 
 	// copy c'tor (deleted)
 public:
-	Page(const string& name); //c'tor
+	Page(const std::string& name); //c'tor
 	~Page() = delete; // d'tor
 	
 	//get func:
-	const string& getName() const;
-	const vector<User*>& getFollowers() const;
-	const vector<Status*>& getWall() const;
+	const std::string& getName() const;
+	const std::vector<User*>& getFollowers() const;
+	const std::vector<Status*>& getWall() const;
 
 	//set func:
-	void setname(string& newName);
+	void setname(std::string& newName);
 	void setFollowers(User& newFollower);
 	void setWall(Status& newStatus);
-	void setStatus(string& text);
+	void setStatus(std::string& text);
 
 	//methods
 	void reallocWall();
@@ -40,7 +40,7 @@ public:
 	bool removeUserFromPageFollowers(User& follower, bool noErrMsg = false); //When using this function, only send follower.
 	void showUsersList();
 	void createNewStatus();
-	User* findFollower(const string& name);
+	User* findFollower(const std::string& name);
 };
 
 #endif

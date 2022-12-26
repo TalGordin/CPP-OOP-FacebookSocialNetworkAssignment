@@ -1,5 +1,4 @@
 #include "socialnetwork.h"
-using namespace std;
 
 //********************************************************************************
 
@@ -10,31 +9,16 @@ SocialNetwork::SocialNetwork()
 	allPages.push_back(nullptr);
 } //c'tor
 
-//d'tor
-SocialNetwork::~SocialNetwork() 
-{
-	vector<User*>::iterator usersItr = allUsers.begin();
-	vector<User*>::iterator usersEnd = allUsers.end();
-
-	for (; usersItr != usersEnd; ++usersItr)
-		delete *usersItr;
-
-	vector<Page*>::iterator pagesItr = allPages.begin();
-	vector<Page*>::iterator pagesEnd = allPages.end();
-
-	for (; pagesItr != pagesEnd; ++pagesItr)
-		delete *pagesItr;
-} // d'tor
 
 //********************************************************************************
 
 //get funcs: allows access to the class attributes
-const vector<User*> SocialNetwork::getAllUsers()
+const std::vector<User*> SocialNetwork::getAllUsers()
 {
 	return allUsers;
 }
 
-const vector<Page*> SocialNetwork::getAllPages()
+const std::vector<Page*> SocialNetwork::getAllPages()
 {
 	return allPages;
 }
@@ -52,7 +36,7 @@ const int SocialNetwork::getPagesAmount()
 //********************************************************************************
 
 //set funcs: insert values into class attributes
-User* SocialNetwork::setUser(int day, int month, int year, string& name)
+User* SocialNetwork::setUser(int day, int month, int year, std::string& name)
 {
 	if (allUsers.size() == allUsers.capacity())
 		allUsers.reserve(2 * allUsers.capacity());
@@ -63,7 +47,7 @@ User* SocialNetwork::setUser(int day, int month, int year, string& name)
 	return newUser;
 }
 
-Page* SocialNetwork::setPage(const string& name)
+Page* SocialNetwork::setPage(const std::string& name)
 {
 	if (allPages.size() == allPages.capacity())
 		allPages.reserve(2 * allPages.capacity());
@@ -79,11 +63,11 @@ Page* SocialNetwork::setPage(const string& name)
 //methods
 
 //Searches for user in the social network. If found, returns pointer to user, else, returns nullptr.
-User* SocialNetwork::findUser(const string name)
+User* SocialNetwork::findUser(const std::string name)
 {
 	unsigned int size = allUsers.size();
-	vector<User*>::iterator itr = allUsers.begin();
-	vector<User*>::iterator end = allUsers.end();
+	std::vector<User*>::iterator itr = allUsers.begin();
+	std::vector<User*>::iterator end = allUsers.end();
 
 	for (; itr != end; ++itr)
 	{
@@ -93,11 +77,11 @@ User* SocialNetwork::findUser(const string name)
 	return nullptr; //If not found, returns null.
 }
 //Searches for page in the social network. If found, returns pointer to page, else, returns nullptr.
-Page* SocialNetwork::findPage(const string name)
+Page* SocialNetwork::findPage(const std::string name)
 {
 	unsigned int size = allPages.size();
-	vector<Page*>::iterator itr = allPages.begin();
-	vector<Page*>::iterator end = allPages.end();
+	std::vector<Page*>::iterator itr = allPages.begin();
+	std::vector<Page*>::iterator end = allPages.end();
 
 	for (; itr != end; ++itr)
 	{
@@ -109,33 +93,33 @@ Page* SocialNetwork::findPage(const string name)
 //prints out all pages and users in the social network
 void SocialNetwork::showAllAccounts()
 {
-	cout << "Users in the system: \n";
-	cout << "~ ~ ~ ~ ~\n";
+	std::cout << "Users in the system: \n";
+	std::cout << "~ ~ ~ ~ ~\n";
 
-	vector<User*>::iterator uItr = allUsers.begin();
-	vector<User*>::iterator uItrEnd = allUsers.end();
+	std::vector<User*>::iterator uItr = allUsers.begin();
+	std::vector<User*>::iterator uItrEnd = allUsers.end();
 
 	for (; uItr != uItrEnd; ++uItr)
-		cout << (*uItr)->getName() << "\n";
+		std::cout << (*uItr)->getName() << "\n";
 	
-	cout << "~ ~ ~ ~ ~\n\n";
+	std::cout << "~ ~ ~ ~ ~\n\n";
 
-	cout << "Pages in the system: \n";
-	cout << "~ ~ ~ ~ ~\n";
+	std::cout << "Pages in the system: \n";
+	std::cout << "~ ~ ~ ~ ~\n";
 
-	vector<Page*>::iterator pItr = allPages.begin();
-	vector<Page*>::iterator pItrEnd = allPages.end();
+	std::vector<Page*>::iterator pItr = allPages.begin();
+	std::vector<Page*>::iterator pItrEnd = allPages.end();
 
 	for (; pItr != pItrEnd; ++pItr)
-		cout << (*pItr)->getName() << "\n";
+		std::cout << (*pItr)->getName() << "\n";
 
-	cout << "~ ~ ~ ~ ~\n\n";
+	std::cout << "~ ~ ~ ~ ~\n\n";
 }
 //For ease of testing, inserts premade users and pages to the social network
 void SocialNetwork::initializeFaceBookUsers()
 {
 // INSERT 3 USERS:
-	string name1 = "Avital", name2 = "Archie", name3 = "Bizo";
+	std::string name1 = "Avital", name2 = "Archie", name3 = "Bizo";
 
 	setUser(5, 2, 1998, name1);
 	setUser(15, 4, 2021, name2);
@@ -143,7 +127,7 @@ void SocialNetwork::initializeFaceBookUsers()
 
 // INSERT 3 PAGES:
 
-	string name4 = "Hogwarts", name5 = "Academit TA-Y", name6 = "Microsoft";
+	std::string name4 = "Hogwarts", name5 = "Academit TA-Y", name6 = "Microsoft";
 
 	setPage(name4);
 	setPage(name5);
@@ -153,14 +137,14 @@ void SocialNetwork::initializeFaceBookUsers()
 
 //USERS:
 
-	string text1 = "I hope I get 100 :D";
-	string text2 = "Just a tired student trying to get by.";
-	string text3 = "I hope I get food :D";
-	string text4 = "Let me into the room, hooman.";
-	string text5 = "What's up, my brothers?";
-	string text6 = "Woof Woof :3";
+	std::string text1 = "I hope I get 100 :D";
+	std::string text2 = "Just a tired student trying to get by.";
+	std::string text3 = "I hope I get food :D";
+	std::string text4 = "Let me into the room, hooman.";
+	std::string text5 = "What's up, my brothers?";
+	std::string text6 = "Woof Woof :3";
 
-	vector<User*>::iterator uItr = allUsers.begin();
+	std::vector<User*>::iterator uItr = allUsers.begin();
 
 	(*uItr)->setStatus(text1);
 	(*uItr)->setStatus(text2);
@@ -175,14 +159,14 @@ void SocialNetwork::initializeFaceBookUsers()
 
 //PAGES:
 
-	string text7 = "Welcome, Harry :D";
-	string text8 = "We hate Slytherin";
-	string text9 = "Good luck with Calculus";
-	string text10 = "You're gonna need it";
-	string text11 = "Come work with us we have an ice cream machine :D";
-	string text12 = "Please update to Windows 11!";
+	std::string text7 = "Welcome, Harry :D";
+	std::string text8 = "We hate Slytherin";
+	std::string text9 = "Good luck with Calculus";
+	std::string text10 = "You're gonna need it";
+	std::string text11 = "Come work with us we have an ice cream machine :D";
+	std::string text12 = "Please update to Windows 11!";
 
-	vector<Page*>::iterator pItr = allPages.begin();
+	std::vector<Page*>::iterator pItr = allPages.begin();
 
 	(*uItr)->setStatus(text7);
 	(*uItr)->setStatus(text8);
@@ -199,7 +183,7 @@ void SocialNetwork::initializeFaceBookUsers()
 
 	uItr = allUsers.begin();
 
-	vector<User*>::iterator itr0, itr1, itr2;
+	std::vector<User*>::iterator itr0, itr1, itr2;
 	itr0 = allUsers.begin();
 	itr1 = itr0 + 1;
 	itr2 = itr1 + 1;
