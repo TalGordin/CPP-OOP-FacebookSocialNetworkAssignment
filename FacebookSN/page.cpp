@@ -68,8 +68,18 @@ void Page::setStatus(std::string& text)
 void Page::showAllStatuses() 
 {
 	int size = wall.size();
-	if (size == 0) //Exceptions
-		std::cout << "You have no statuses on your wall!\n";
+
+	if (size == 0)
+	{
+		try
+		{
+			throw PageException();
+		}
+		catch (PageException& exc)
+		{
+			cout << exc.followerNotFound() << endl;
+		}
+	}
 	else
 	{
 		std::cout << "Showing all statuses for page " << name << ":\n";
@@ -101,9 +111,15 @@ bool Page::addUserToPageFollowers(User& follower, bool noErrMsg)
 		return true;
 	}
 	else
-		if (!noErrMsg) //Meaning, we're not here because of a loop //Exception
+		 //Meaning, we're not here because of a loop //Exception
+		try
 		{
-			std::cout << follower.getName() << " is already following your page!\n";
+			if (!noErrMsg)
+				throw PageException();
+		}
+		catch (PageException& exc)
+		{
+			cout << exc.userAlreadyFollows() << endl;
 			return false;
 		}
 	return true;
@@ -121,9 +137,10 @@ bool Page::removeUserFromPageFollowers(User& follower, bool noErrMsg)
 			(*itr) = nullptr;
 
 			vector<User*>::iterator itr2 = itr;
+			vector<User*>::iterator itr2End = itrEnd - 1;
 
-			for (; itr2 != itrEnd; ++itr2)
-				itr2 = itr2 + 1;
+			for (; itr2 != itr2End; ++itr2)
+				*(itr2) = *(itr2 + 1);
 
 			followers.pop_back();
 			follower.removePageFromFollowedPages(*this, true);
@@ -131,9 +148,14 @@ bool Page::removeUserFromPageFollowers(User& follower, bool noErrMsg)
 		}
 	}
 
-	if (!noErrMsg) //Exceptions
+	try
 	{
-		std::cout << follower.getName() << " isn't following your page!\n";
+		if (!noErrMsg)
+			throw PageException();
+	}
+	catch (PageException& exc)
+	{
+		cout << exc.followerNotFound() << endl;
 		return false;
 	}
 	return true;
@@ -142,7 +164,7 @@ bool Page::removeUserFromPageFollowers(User& follower, bool noErrMsg)
 void Page::createNewStatus()
 {
 	string text;
-	std::cout << "Please type in your status (up to " << MAX_STATUS_LEN << " characters): \n";
+	std::cout << "Please type in your status: \n";
 	std::cin.ignore();
 	getline(std::cin, text);
 
@@ -164,8 +186,15 @@ User* Page::findFollower(const string& name)
 void Page::showUsersList()
 {
 	int size = followers.size();
-	if (size == 0) //Exceptions
-		std::cout << "You have no followers!\n";
+	if (size == 0)
+		try
+		{
+			throw PageException();
+		}
+		catch(PageException& exc)
+		{
+			cout << exc.noFollowers() << endl;
+		}
 	else
 	{
 		vector<User*>::iterator itr = followers.begin();

@@ -35,6 +35,10 @@ public:
 	void setStatus(std::string& text);
 
 	//methods
+		//operators:
+	const Page& operator+=(User& user);
+	const bool operator>(Page& other);
+
 	void reallocWall();
 	void reallocFollowers();
 	void showAllStatuses();

@@ -113,15 +113,31 @@ bool User::friendRequest(User& requestedUser)
 
 	friendName = requestedUser.getName();
 	friendPtr = findFriend(friendName);
-
-	if (friendPtr != nullptr) //Exceptions
+	try 
 	{
-		std::cout << "You're already friends with " << friendName << "!\n";
-		return  false;
+		if (friendPtr != nullptr) //Exceptions
+		{
+			throw UserException();
+		}
+		
 	}
-	if (friendPtr == this)
+	catch (UserException& exc)
 	{
-		std::cout << "You can't send a friendship request to yourself!\n";
+		cout << exc.alreadyFriends() << endl;
+		return false;
+	}
+	try
+	{
+		if (friendPtr == this)
+		{
+			throw UserException();
+			std::cout << "You can't send a friendship request to yourself!\n";
+			
+		}
+	}
+	catch (UserException exc)
+	{
+		cout << exc.sendFriendReqwestToYourself() << endl;
 		return false;
 	}
 
@@ -131,16 +147,25 @@ bool User::friendRequest(User& requestedUser)
 }
 //removes friendship from two users (each user removes the other user from friends array)
 void User::unfriend(User& reqwestedUser)
-{
-	unfriendOneSide(reqwestedUser);
-	reqwestedUser.unfriendOneSide(*this);
+{	
+		unfriendOneSide(reqwestedUser);
+		reqwestedUser.unfriendOneSide(*this);
 }
 //prints all statuses of user
 void User::showAllUserStatuses()
 {
 	int size = wall.size();
-	if (size == 0) //Exceptions
-		std::cout << "You have no statuses on your wall!\n";
+	if (size == 0)
+	{
+		try
+		{
+			throw UserException();
+		}
+		catch (UserException& exc)
+		{
+			cout << exc.emptyWall() << endl;
+		}
+	}
 	else 
 	{
 		std::cout << "Showing all statuses for user " << name << ":\n"; //To ask Keren
@@ -168,15 +193,24 @@ void User::show10LatestFriendsStatuses()
 	for (; usersItr != usersItrEnd; ++usersItr)
 	{
 		int sizeOfWall = (*usersItr)->getWall().size();
-		if (sizeOfWall == 0) //Exceptions
-			std::cout << (*usersItr)->getName() << " has no statuses.\n\n";
+		if (sizeOfWall == 0)
+		{
+			try
+			{
+				throw UserException();
+			}
+			catch (UserException& exc)
+			{
+				cout << exc.emptyWall() << endl;
+			}
+		}
 		else
 		{
 			std::cout << (*usersItr)->getName() << "'s latest statuses:\n\n"; //To Ask Keren
 			int amountStatuses = (*usersItr)->getWall().size();
 
 			std::vector<Status*> statusesOfFriend = (*usersItr)->getWall();
-			std::vector<Status*>::iterator statusItr = statusesOfFriend.end();
+			std::vector<Status*>::iterator statusItr = statusesOfFriend.begin();
 
 			for (int j = sizeOfWall - 1 ; j >=  sizeOfWall - LATEST_STAT_NUM && amountStatuses > 0; j--, amountStatuses--)
 			{
@@ -192,8 +226,17 @@ void User::show10LatestFriendsStatuses()
 void User::showAllFriends()
 {
 	int size = friendsArr.size();
-	if (size == 0) //Exceptions
-		std::cout << "You have no friends at the moment.\n";
+	if (size == 0)
+	{
+		try
+		{
+			throw UserException();
+		}
+		catch (UserException& exc)
+		{
+			cout << exc.noFriends() << endl;
+		}
+	}
 	else 
 	{
 		std::cout << name << "'s friends: \n";
@@ -204,8 +247,7 @@ void User::showAllFriends()
 
 		for (; itr != end; ++itr)
 		{
-			(*itr)->getName();
-			std::cout << "\n";
+			std::cout << (*itr)->getName() << "\n";
 		}
 		std::cout << "~ ~ ~ ~ ~\n";
 	}
@@ -215,7 +257,16 @@ void User::showAllFollowedPages()
 {
 	int size = followedPages.size();
 	if (size == 0) //Exceptions
-		std::cout << "You're not following any pages at the moment.\n";
+	{
+		try
+		{
+			throw UserException();
+		}
+		catch (UserException& exc)
+		{
+			cout << exc.noFollowedPages() << endl;
+		}
+	}
 	else
 	{
 		std::cout << name << "'s followed pages: \n";
@@ -225,8 +276,7 @@ void User::showAllFollowedPages()
 
 		for (; itr != end; ++itr)
 		{
-			(*itr)->getName();
-			std::cout << "\n";
+			std::cout << (*itr)->getName() << "\n";
 		}
 		std::cout << "~ ~ ~ ~ ~\n";
 	}
@@ -246,9 +296,17 @@ bool User::addPageToFollowedPages(Page& page, bool noErrMsg)
 		return true;
 	}
 	else
-		if (!noErrMsg) //Meaning, we're not here because of a loop //Exceptions
+		try
 		{
-			std::cout << "You're already following " << page.getName() << "!\n";
+			if (!noErrMsg) //Meaning, we're not here because of a loop //Exceptions
+			{
+				throw UserException();
+				
+			}
+		}
+		catch (UserException& exc)
+		{
+			cout << exc.alreadyFollowing() << endl;
 			return false;
 		}
 	return true;
@@ -266,9 +324,10 @@ bool User::removePageFromFollowedPages(Page& page, bool noErrMsg)
 			(*itr) = nullptr;
 
 			std::vector<Page*>::iterator itr2 = itr;
+			std::vector<Page*>::iterator itr2End = itrEnd - 1;
 
-			for (; itr2 != itrEnd; ++itr2)
-				itr2 = itr2 + 1;
+			for (; itr2 != itr2End; ++itr2)
+				(*itr2) = *(itr2 + 1);
 
 			followedPages.pop_back();
 			page.removeUserFromPageFollowers(*this, true);
@@ -277,7 +336,14 @@ bool User::removePageFromFollowedPages(Page& page, bool noErrMsg)
 	}
 	if (!noErrMsg) //Meaning, we're not here because of a loop //Exceptions
 	{
-		std::cout << "You're not following " << page.getName();
+		try
+		{
+			throw UserException();
+		}
+		catch (UserException& exc)
+		{
+			cout << exc.pageNotFound() << endl;
+		}
 		return false;
 	}
 	return true;
@@ -311,7 +377,7 @@ Page* User::findPage(const std::string& name) {
 void User::createNewStatus() //To ask Keren - should this be a User func or a global func?
 {
 	std::string text;
-	std::cout << "Please type in your status (up to " << MAX_STATUS_LEN << " characters): \n";
+	std::cout << "Please type in your status: \n";
 	std::cin.ignore();
 	getline(std::cin, text);
 
@@ -331,9 +397,10 @@ void User::unfriendOneSide(User& reqwestedUser)
 		if ((*itr)->getName() == reqwestedUser.getName())
 		{
 			std::vector<User*>::iterator itr2 = itr;
+			std::vector<User*>::iterator itr2End = itrEnd - 1;
 
-			for (; itr2 != itrEnd; ++itr2)
-				itr = itr + 1;
+			for (; itr2 != itr2End; ++itr2)
+				*itr2 = *(itr2 + 1);
 
 			isFound = true;
 		}

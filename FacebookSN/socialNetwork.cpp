@@ -117,7 +117,7 @@ void SocialNetwork::initializeFaceBookUsers()
 	setUser(7, 6, 2018, name3);
 // INSERT 3 PAGES:
 
-	std::string name4 = "Hogwarts", name5 = "Academit TA-Y", name6 = "Microsoft";
+	std::string name4 = "Hogwarts", name5 = "Academit TAY", name6 = "Microsoft";
 
 	setPage(name4);
 	setPage(name5);

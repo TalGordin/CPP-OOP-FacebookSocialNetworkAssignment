@@ -189,22 +189,34 @@ void userMenu(User& user, SocialNetwork& system)
 			break;
 		case 3:
 			if (user.getConnections().size() == 0)
-				std::cout << "You have no friends!\n";
+				try {
+					throw UserException();
+				}
+				catch (UserException& exc) 
+				{
+					cout << exc.noFriends();
+				}
 			else
 				user.show10LatestFriendsStatuses();
 			break;
 		case 4:
 			success = sendFriendRequest(user, system);
 			if (success)
-				std::cout << "\n" << user.getName() << " has accepted your friend request!\n";
+				std::cout << "\n" << "They have accepted your friend request!\n";
 			break;
 		case 5:
 			if (user.getConnections().size() == 0)
-				std::cout << "You have no friends!\n";
+				try {
+					throw UserException();
+				}
+				catch (UserException& exc)
+				{
+					cout << exc.noFriends();
+				}
 			else
 			{
 				unfollowFriend(user);
-				std::cout << "\n" << "You unfriended " << user.getName() << "!\n";
+				std::cout << "\n" << "You're no longer friends!\n";
 			}
 			break;
 		case 6:
@@ -260,7 +272,14 @@ void pageMenu(Page& page, SocialNetwork& system)
 			break;
 		case 4:
 			if (page.getFollowers().size() == 0)
-				std::cout << "You have no followers!\n";
+				try
+				{
+				throw PageException();
+				}
+				catch (PageException& exc)
+				{
+					cout << exc.noFollowers() << endl;
+				}
 			else
 				removeFollowerFromPage(page, system);
 			break;
@@ -282,28 +301,42 @@ User* addUser(SocialNetwork& system)
 	User* user = nullptr;
 	bool legalDOB;
 
+	std::cin.ignore();
 	do 
 	{
-		std::cout << "Enter your name (max " << MAX_NAME_LEN << " characters): ";
-		std::cin.ignore();
-		getline(std::cin, name);
+		try
+		{
+			std::cout << "Enter your name: ";
+			getline(std::cin, name);
 
-
-		user = system.findUser(name);
-		if (user != nullptr)
-			std::cout << "The user " << name << " already exists on Facebook! Please select a different name. \n";
+			user = system.findUser(name);
+			if (user != nullptr)
+				throw SNException();
+		}
+		catch (SNException& exc)
+		{
+			cout << exc.repeatedUsername();
+			cout << "Try again! \n";
+		}
 	} while (user != nullptr);
 
 	do {
-		std::cout << "Please enter your date of birth in the following format: <day> <month> <year> \n";
-		std::cin >> day >> month >> year;
+		try
+		{
+			std::cout << "Please enter your date of birth in the following format: <day> <month> <year> \n";
+			std::cin >> day >> month >> year;
 
-		if ((year < 1900 || year > 2022) || (month < 1 || month > 12) || (day < 1 || day > getMaxDay(month))) {
-			std::cout << "Error! Invalid date entered!\n";
+			if ((year < 1900 || year > 2022) || (month < 1 || month > 12) || (day < 1 || day > getMaxDay(month)))
+				throw SNException();
+				
+			legalDOB = true;
+		}
+		catch(SNException& exc)
+		{
+			cout << exc.illegalDOB();
+			cout << endl;
 			legalDOB = false;
 		}
-		else
-			legalDOB = true;
 	} while (!legalDOB);
 
 	return system.setUser(day, month, year, name);
@@ -318,10 +351,17 @@ User* findUser(SocialNetwork& system) {
 		std::cout << "Choose a user: ";
 		std::cin.getline(name, MAX_NAME_LEN);
 
- 		userPtr = system.findUser(name);
+		userPtr = system.findUser(name);
+		try
+		{
 
-		if (userPtr == nullptr)
-			std::cout << "\nUser not found! Try again!\n";
+			if (userPtr == nullptr)
+				throw SNException();
+		}
+		catch (SNException& exc)
+		{
+			cout << exc.userNotFound();
+		}
 	} while (userPtr == nullptr);
 	return userPtr;
 }
@@ -340,10 +380,18 @@ bool sendFriendRequest(User& user, SocialNetwork& system)
 		std::cin.getline(friendName, MAX_NAME_LEN);
 
 		friendPtr = system.findUser(friendName);
-		if (friendPtr == nullptr) 
+		try
 		{
-			std::cout << "User not found! Please try again.\n";
-			validInput = false;
+			if (friendPtr == nullptr)
+			{
+				validInput = false;
+				throw SNException();
+			}
+		}
+		catch (SNException& exc)
+		{
+			cout << exc.userNotFound();
+			cout << " Try again!" << endl;
 		}
 		
 	} while (!validInput);
@@ -353,19 +401,25 @@ bool sendFriendRequest(User& user, SocialNetwork& system)
 
 void unfollowFriend(User& user)
 {
-	char friendName[MAX_NAME_LEN];
+	string friendName;
 	User* friendPtr = nullptr;
 	std::cin.ignore();
 	do
 	{
 		std::cout << "Choose a user to unfriend: ";
-		std::cin.getline(friendName, MAX_NAME_LEN);
+		getline(std::cin, friendName);
 
-		friendPtr = user.findFriend(friendName);
+		try
+		{
+			friendPtr = user.findFriend(friendName);
 
-		if (friendPtr == NULL)
-			std::cout << "User not found in friends list! Please try again.\n";
-
+			if (friendPtr == NULL)
+				throw UserException();
+		}
+		catch (UserException& exc) //To ask Keren - why by ref?
+		{
+			cout << exc.friendNotFound() << " Please try again." << endl;
+		}
 	} while (friendPtr == nullptr);
 
 	user.unfriend(*friendPtr);
@@ -374,17 +428,24 @@ void unfollowFriend(User& user)
 //****************** PAGE ACTIONS ******************
 
 Page* addPage(SocialNetwork& system) {
-	char name[MAX_NAME_LEN];
+	string name;
 	Page* page = nullptr;
 	std::cin.ignore(); //gets chars from buffer
 	do 
 	{
-		std::cout << "Enter your page's name (max " << MAX_NAME_LEN << " characters): ";
-		std::cin.getline(name, MAX_NAME_LEN);
+		std::cout << "Enter your page's name: ";
+		getline(std::cin, name);
 
-		page = system.findPage(name);
-		if (page != nullptr)
-			std::cout << "The page " << name << "already exists on Facebook! Please select a different name. \n";
+		try
+		{
+			page = system.findPage(name);
+			if (page != nullptr)
+				throw SNException();
+		}
+		catch (SNException& exc)
+		{
+			cout << exc.repeatedPage() << " Please select a different name." << endl;
+		}
 	} while (page != nullptr);
 
 	return system.setPage(name);
@@ -400,9 +461,15 @@ Page* findPage(SocialNetwork& system) {
 		std::cin.getline(name, MAX_NAME_LEN);
 
 		pagePtr = system.findPage(name);
-
-		if (pagePtr == nullptr)
-			std::cout << "\nPage not found! Try again!\n";
+		try
+		{
+			if (pagePtr == nullptr)
+				throw SNException();
+		}
+		catch (SNException& exc)
+		{
+			cout << exc.pageNotFound() << " Please try again." << endl;
+		}
 	} while (pagePtr == nullptr);
 	return pagePtr;
 }
@@ -418,9 +485,15 @@ void followPage(User& user, SocialNetwork& system)
 		std::cin.getline(pageName, MAX_NAME_LEN);
 
 		pagePtr = system.findPage(pageName);
-		if (pagePtr == nullptr)
-			std::cout << "Page not found! Please try again.\n";
-
+		try
+		{
+			if (pagePtr == nullptr)
+				throw SNException();
+		}
+		catch (SNException& exc)
+		{
+			cout << exc.pageNotFound() << " Please try again." << endl;
+		}
 	} while (pagePtr == nullptr);
 
 	if (user.addPageToFollowedPages(*pagePtr))
@@ -430,7 +503,14 @@ void followPage(User& user, SocialNetwork& system)
 void unfollowPage(User& user, SocialNetwork& system)
 {
 	if (user.getFollowedPages().size() == 0)
-		std::cout << "You're not following any pages!\n";
+		try
+		{
+			throw UserException();
+		}
+		catch (UserException& exc)
+		{
+			cout << exc.noFollowedPages() << endl;
+		}
 	else
 	{
 		char pageName[MAX_NAME_LEN];
@@ -440,12 +520,17 @@ void unfollowPage(User& user, SocialNetwork& system)
 		{
 			std::cout << "Choose a page to unfollow: ";
 			std::cin.getline(pageName, MAX_NAME_LEN);
+			try
+			{
+				pagePtr = user.findPage(pageName);
 
-			pagePtr = user.findPage(pageName);
-
-			if (pagePtr == NULL)
-				std::cout << "Page not found in followed pages list! Please try again.\n";
-
+				if (pagePtr == NULL)
+					throw UserException();
+			}
+			catch(UserException& exc)
+			{
+				cout << exc.pageNotFound() << " Please try again." << endl;
+			}
 		} while (pagePtr == nullptr);
 
 		if (user.removePageFromFollowedPages(*pagePtr))
@@ -464,11 +549,18 @@ void addFollowerToPage(Page& page, SocialNetwork& system) {
 		validInput = true;
 		std::cout << "Choose a user to follow your page: ";
 		std::cin.getline(followerName, MAX_NAME_LEN);
-
-		followerPtr = system.findUser(followerName);
-		if (followerPtr == nullptr) {
-			std::cout << "User not found! Please try again.\n";
-			validInput = false;
+		
+		try
+		{
+			followerPtr = system.findUser(followerName);
+			if (followerPtr == nullptr) {
+				validInput = false;
+				throw SNException();
+			}
+		}
+		catch (SNException& exc)
+		{
+			cout << exc.userNotFound() << " Please try again." << endl;
 		}
 		alreadyFollows = page.findFollower(followerName);
 		if (alreadyFollows != nullptr) {
@@ -493,9 +585,15 @@ void removeFollowerFromPage(Page& page, SocialNetwork& system)
 
 		followerPtr = page.findFollower(followerName);
 
-		if (followerPtr == NULL)
-			std::cout << "User not found in followers list! Please try again.\n";
-
+		try
+		{
+			if (followerPtr == NULL)
+				throw PageException();
+		}
+		catch (PageException& exc)
+		{
+			cout << exc.followerNotFound() << " Please try again." << endl;
+		}
 	} while (followerPtr == nullptr);
 
 	page.removeUserFromPageFollowers(*followerPtr);

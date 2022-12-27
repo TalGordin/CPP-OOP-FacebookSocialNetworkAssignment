@@ -149,11 +149,13 @@
   <ItemGroup>
     <ClInclude Include="ex1.h" />
     <ClInclude Include="page.h" />
+    <ClInclude Include="pageExceptions.h" />
     <ClInclude Include="socialNetwork.h" />
+    <ClInclude Include="socialNetworkExceptions.h" />
     <ClInclude Include="status.h" />
     <ClInclude Include="structs.h" />
     <ClInclude Include="user.h" />
-    <ClInclude Include="UserExceptions.h" />
+    <ClInclude Include="userExceptions.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

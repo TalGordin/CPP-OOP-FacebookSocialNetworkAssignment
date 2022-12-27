@@ -53,7 +53,13 @@
     <ClInclude Include="structs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UserExceptions.h">
+    <ClInclude Include="userExceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="socialNetworkExceptions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pageExceptions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

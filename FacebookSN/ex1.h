@@ -12,6 +12,9 @@
 #include "user.h"
 #include <vector>
 #include <string>
+#include "socialNetworkExceptions.h"
+#include "userExceptions.h"
+#include "pageExceptions.h"
 #pragma warning (disable: 4996)
 
 constexpr int MAX_NAME_LEN = 30;
