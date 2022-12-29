@@ -10,11 +10,11 @@ class User;
 class Status
 {
 	Time time;
-	std::string text; //TO ASK KEREN - is there a need for std::string?
-	Status(const Status& oldStatus); // copy c'tor
+	string text;
 
 public:
 	Status(std::string text); //c'tor
+	Status(const Status& oldStatus); // copy c'tor
 	// d'tor not needed, string destructs itself
 
 	//get func:
@@ -25,6 +25,9 @@ public:
 	void setTime();
 
 	//methods
+		//Operators:
+	const bool operator==(Status& other);
+
 	void printStatus();
 
 };

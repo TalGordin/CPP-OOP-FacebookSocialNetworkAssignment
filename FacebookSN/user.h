@@ -19,11 +19,12 @@ class User
 	std::vector<Status*> wall;
 	std::vector<User*> friendsArr;
 	std::vector<Page*> followedPages;
-	User(const User& user); // copy c'tor
 
 public:
 	User(int day, int month, int year, std::string name); //c'tor
-	~User() = delete;
+	User(const User& copiedUser); // copy c'tor
+	User(const User&& movedUser) noexcept(true); //move c'tor
+	~User();
 
 	//get func
 	const std::string& getName() const;
@@ -41,11 +42,15 @@ public:
 	void setStatus(std::string& text);
 
 	// methods
+		//operators:
+	const User& operator+=(User& newFriend);
+	const bool operator>(User& other);
+
 	void reallocConnections();
 	void reallocWall();
 	void reallocfollowedPages();
 	bool friendRequest(User& reqwestedUser);
-	void unfriend(User& reqwestedUser);
+	void unfriend(std::string& name);
 	void showAllUserStatuses();
 	void show10LatestFriendsStatuses();
 	void showAllFriends(); 

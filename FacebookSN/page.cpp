@@ -7,7 +7,40 @@ using namespace std;
 Page::Page(const string& name)
 {
 	this->name = name;
+}
+//Copy c'tor
+Page::Page(const Page& copiedPage)
+{
+	this->name = copiedPage.getName();
+	this->followers = copiedPage.getFollowers();
+	
+	vector<Status*> oldStatuses = copiedPage.getWall();
 
+	vector<Status*>::iterator itr = oldStatuses.begin();
+	vector<Status*>::iterator itrEnd = oldStatuses.end();
+
+	for (; itr != itrEnd; ++itr)
+	{
+		Status* temp = new Status((*itr)->getStatus());
+		wall.push_back(temp);
+	}
+}
+
+Page::Page(const Page&& other) noexcept(true)
+{
+	this->name = other.getName();
+	this->followers = other.getFollowers();
+
+	this->wall = other.getWall();
+}
+
+Page::~Page()
+{
+	vector<Status*>::iterator itr = wall.begin();
+	vector<Status*>::iterator itrEnd = wall.end();
+
+	for (; itr != itrEnd; ++itr)
+		delete (*itr);
 }
 
 //********************************************************************************
@@ -64,8 +97,21 @@ void Page::setStatus(std::string& text)
 
 //methods:
 
+const Page& Page::operator+=(User& user)
+{
+	addUserToPageFollowers(user);
+		return *this;
+}
+
+const bool Page::operator>(Page& other)
+{
+	vector<User*> otherFollowers = other.getFollowers();
+	return followers.size() > otherFollowers.size() ? true : false;
+}
+
+
 //Shows all statuses of page
-void Page::showAllStatuses() 
+void Page::showAllStatuses() noexcept(false)
 {
 	int size = wall.size();
 
@@ -73,9 +119,9 @@ void Page::showAllStatuses()
 	{
 		try
 		{
-			throw PageException();
+			throw PageException_FollowerNotFound();
 		}
-		catch (PageException& exc)
+		catch (PageException_FollowerNotFound& exc)
 		{
 			cout << exc.followerNotFound() << endl;
 		}
@@ -97,7 +143,7 @@ void Page::showAllStatuses()
 	}
 }
 //adds user to followers of page. When using this function, only send follower.
-bool Page::addUserToPageFollowers(User& follower, bool noErrMsg)
+bool Page::addUserToPageFollowers(User& follower, bool noErrMsg) noexcept(false)
 {
 	User* searchedUser = findFollower(follower.getName());
 
@@ -115,9 +161,9 @@ bool Page::addUserToPageFollowers(User& follower, bool noErrMsg)
 		try
 		{
 			if (!noErrMsg)
-				throw PageException();
+				throw PageException_UserAlreadyFollows();
 		}
-		catch (PageException& exc)
+		catch (PageException_UserAlreadyFollows& exc)
 		{
 			cout << exc.userAlreadyFollows() << endl;
 			return false;
@@ -125,7 +171,7 @@ bool Page::addUserToPageFollowers(User& follower, bool noErrMsg)
 	return true;
 }
 //removes user from followers of page. When using this function, only send follower.
-bool Page::removeUserFromPageFollowers(User& follower, bool noErrMsg)
+bool Page::removeUserFromPageFollowers(User& follower, bool noErrMsg) noexcept(false)
 {
 	vector<User*>::iterator itr = followers.begin();
 	vector<User*>::iterator itrEnd = followers.end();
@@ -151,9 +197,9 @@ bool Page::removeUserFromPageFollowers(User& follower, bool noErrMsg)
 	try
 	{
 		if (!noErrMsg)
-			throw PageException();
+			throw PageException_FollowerNotFound();
 	}
-	catch (PageException& exc)
+	catch (PageException_FollowerNotFound& exc)
 	{
 		cout << exc.followerNotFound() << endl;
 		return false;
@@ -183,15 +229,15 @@ User* Page::findFollower(const string& name)
 	return nullptr;
 }
 //prints all followers of page
-void Page::showUsersList()
+void Page::showUsersList() noexcept(false)
 {
 	int size = followers.size();
 	if (size == 0)
 		try
 		{
-			throw PageException();
+			throw PageException_NoFollowers();
 		}
-		catch(PageException& exc)
+		catch(PageException_NoFollowers& exc)
 		{
 			cout << exc.noFollowers() << endl;
 		}

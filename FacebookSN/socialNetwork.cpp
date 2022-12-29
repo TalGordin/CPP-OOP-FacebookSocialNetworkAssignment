@@ -2,6 +2,23 @@
 using namespace std;
 //********************************************************************************
 
+SocialNetwork::~SocialNetwork()
+{
+	vector<User*>::iterator uItr = allUsers.begin();
+	vector<User*>::iterator uItrEnd = allUsers.end();
+
+	vector<Page*>::iterator pItr = allPages.begin();
+	vector<Page*>::iterator pItrEnd = allPages.end();
+
+	for (; uItr != uItrEnd; ++uItr)
+		delete (*uItr);
+
+	for (; pItr != pItrEnd; ++pItr)
+		delete (*pItr);
+}
+
+//********************************************************************************
+
 //get funcs: allows access to the class attributes
 const std::vector<User*> SocialNetwork::getAllUsers()
 {

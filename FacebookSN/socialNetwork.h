@@ -14,11 +14,12 @@ class SocialNetwork
 {
 	std::vector<User*> allUsers;
 	std::vector<Page*> allPages;
-	//SocialNetwork(const SocialNetwork& facebook);
 
 public:
 	SocialNetwork() = default; //c'tor
-
+	SocialNetwork(const SocialNetwork& facebook) = delete;
+	~SocialNetwork();
+	
 	//get funcs:
 	const std::vector<User*> getAllUsers();
 	const std::vector<Page*> getAllPages();

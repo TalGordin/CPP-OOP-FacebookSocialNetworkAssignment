@@ -3,19 +3,59 @@ using namespace std;
 //***************************************************************
 
 //c'tor
-User::User(int day, int month, int year, std::string name)
+User::User(int day, int month, int year, std::string name) noexcept(false)
 {
 	this->name = name;
 
 	DOB = insertDateOfBirth(day, month, year);
 }
 
+User::User(const User& copiedUser)
+{
+	this->name = copiedUser.getName();
+	this->DOB = copiedUser.getDateOfBirth();
+	this->followedPages = copiedUser.getFollowedPages();
+	this->friendsArr = copiedUser.getConnections();
+
+	vector<Status*> oldStatuses = copiedUser.getWall();
+
+	vector<Status*>::iterator itr = oldStatuses.begin();
+	vector<Status*>::iterator itrEnd = oldStatuses.end();
+
+	for (; itr != itrEnd; ++itr)
+	{
+		Status* temp = new Status((*itr)->getStatus());
+		wall.push_back(temp);
+	}
+}
+
+User::User(const User&& other) noexcept(true)
+{
+	name = other.getName();
+	DOB = other.getDateOfBirth();
+	wall = other.getWall();
+	friendsArr = other.getConnections();
+	followedPages = other.getFollowedPages();
+}
+
+User::~User()
+{
+	vector<Status*>::iterator itr = wall.begin();
+	vector<Status*>::iterator itrEnd = wall.end();
+
+	for (; itr != itrEnd; ++itr)
+		delete (*itr);
+}
+
 //insert func
 
-date insertDateOfBirth(int day, int month, int year)
+date insertDateOfBirth(int day, int month, int year) noexcept(false)
 {
 	date date;
 	
+	if ((year < 1900 || year > 2022) || (month < 1 || month > 12) || (day < 1 || day > getMaxDay(month)))
+		throw SNException_IllegalDOB();
+
 	date.year = year;
 	date.month = month;
 	date.day = day;
@@ -66,7 +106,7 @@ void User::setDateOfBirth(date& newDOB)
 	DOB = newDOB;
 }
 
-void User::setWall(Status& newStatus) //To ask Keren - Should exceptions happen for built-in functions?
+void User::setWall(Status& newStatus)
 {
 
 	if (wall.size() == wall.capacity())
@@ -105,8 +145,19 @@ void User::setStatus(std::string& text)
 
 //methods
 
+const User& User::operator+=(User& newFriend)
+{
+	friendRequest(newFriend);
+	return newFriend;
+}
+const bool User::operator>(User& other)
+{
+	vector<User*> otherConnections = other.getConnections();
+	return friendsArr.size() > otherConnections.size() ? true : false;
+}
+
 //makes two users friends (each user adds the other user to friends array)
-bool User::friendRequest(User& requestedUser)
+bool User::friendRequest(User& requestedUser) noexcept(false)
 {
 	User* friendPtr;
 	std::string friendName;
@@ -116,28 +167,19 @@ bool User::friendRequest(User& requestedUser)
 	try 
 	{
 		if (friendPtr != nullptr) //Exceptions
-		{
-			throw UserException();
-		}
-		
+			throw UserException_AlreadyFriends();
+
+		if (friendPtr == this)
+			throw UserException_FriendYourself();
 	}
-	catch (UserException& exc)
+	catch (UserException_AlreadyFriends& exc)
 	{
 		cout << exc.alreadyFriends() << endl;
 		return false;
 	}
-	try
+	catch (UserException_FriendYourself& exc)
 	{
-		if (friendPtr == this)
-		{
-			throw UserException();
-			std::cout << "You can't send a friendship request to yourself!\n";
-			
-		}
-	}
-	catch (UserException exc)
-	{
-		cout << exc.sendFriendReqwestToYourself() << endl;
+		cout << exc.friendYourself() << endl;
 		return false;
 	}
 
@@ -146,10 +188,14 @@ bool User::friendRequest(User& requestedUser)
 	return true;
 }
 //removes friendship from two users (each user removes the other user from friends array)
-void User::unfriend(User& reqwestedUser)
+void User::unfriend(std::string& name) noexcept(false)
 {	
-		unfriendOneSide(reqwestedUser);
-		reqwestedUser.unfriendOneSide(*this);
+	User* friendPtr = findFriend(name);
+		if (friendPtr == NULL)
+			throw UserException_FriendNotFound();
+
+		unfriendOneSide(*friendPtr);
+		(* friendPtr).unfriendOneSide(*this);
 }
 //prints all statuses of user
 void User::showAllUserStatuses()
@@ -159,16 +205,16 @@ void User::showAllUserStatuses()
 	{
 		try
 		{
-			throw UserException();
+			throw UserException_EmptyWall();
 		}
-		catch (UserException& exc)
+		catch (UserException_EmptyWall& exc)
 		{
 			cout << exc.emptyWall() << endl;
 		}
 	}
 	else 
 	{
-		std::cout << "Showing all statuses for user " << name << ":\n"; //To ask Keren
+		std::cout << "Showing all statuses for user " << name << ":\n";
 		std::cout << "~ ~ ~ ~ ~\n\n";
 
 		std::vector<Status*>::iterator itr = wall.begin();
@@ -197,16 +243,16 @@ void User::show10LatestFriendsStatuses()
 		{
 			try
 			{
-				throw UserException();
+				throw UserException_EmptyWall();
 			}
-			catch (UserException& exc)
+			catch (UserException_EmptyWall& exc)
 			{
 				cout << exc.emptyWall() << endl;
 			}
 		}
 		else
 		{
-			std::cout << (*usersItr)->getName() << "'s latest statuses:\n\n"; //To Ask Keren
+			std::cout << (*usersItr)->getName() << "'s latest statuses:\n\n"; 
 			int amountStatuses = (*usersItr)->getWall().size();
 
 			std::vector<Status*> statusesOfFriend = (*usersItr)->getWall();
@@ -230,9 +276,9 @@ void User::showAllFriends()
 	{
 		try
 		{
-			throw UserException();
+			throw UserException_NoFriends();
 		}
-		catch (UserException& exc)
+		catch (UserException_NoFriends& exc)
 		{
 			cout << exc.noFriends() << endl;
 		}
@@ -260,9 +306,9 @@ void User::showAllFollowedPages()
 	{
 		try
 		{
-			throw UserException();
+			throw UserException_NoFollowedPages();
 		}
-		catch (UserException& exc)
+		catch (UserException_NoFollowedPages& exc)
 		{
 			cout << exc.noFollowedPages() << endl;
 		}
@@ -300,11 +346,11 @@ bool User::addPageToFollowedPages(Page& page, bool noErrMsg)
 		{
 			if (!noErrMsg) //Meaning, we're not here because of a loop //Exceptions
 			{
-				throw UserException();
+				throw UserException_AlreadyFollowing();
 				
 			}
 		}
-		catch (UserException& exc)
+		catch (UserException_AlreadyFollowing& exc)
 		{
 			cout << exc.alreadyFollowing() << endl;
 			return false;
@@ -338,9 +384,9 @@ bool User::removePageFromFollowedPages(Page& page, bool noErrMsg)
 	{
 		try
 		{
-			throw UserException();
+			throw UserException_PageNotFound();
 		}
-		catch (UserException& exc)
+		catch (UserException_PageNotFound& exc)
 		{
 			cout << exc.pageNotFound() << endl;
 		}
@@ -374,7 +420,7 @@ Page* User::findPage(const std::string& name) {
 	return nullptr;
 }
 //creates a new status for user.
-void User::createNewStatus() //To ask Keren - should this be a User func or a global func?
+void User::createNewStatus()
 {
 	std::string text;
 	std::cout << "Please type in your status: \n";

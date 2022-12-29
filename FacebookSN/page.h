@@ -17,11 +17,11 @@ class Page
 	std::string name;
 	std::vector<User*> followers;
 	std::vector<Status*> wall;
-	Page(const Page& copiedPage); 
-	// copy c'tor (deleted)
 public:
 	Page(const std::string& name); //c'tor
-	~Page() = delete; // d'tor
+	Page(const Page& copiedPage); // copy c'tor 
+	Page(const Page&& other) noexcept(true); // move c'tor 
+	~Page(); // d'tor
 	
 	//get func:
 	const std::string& getName() const;
@@ -39,8 +39,6 @@ public:
 	const Page& operator+=(User& user);
 	const bool operator>(Page& other);
 
-	void reallocWall();
-	void reallocFollowers();
 	void showAllStatuses();
 	bool addUserToPageFollowers(User& follower, bool noErrMsg = false); //When using this function, only send follower.
 	bool removeUserFromPageFollowers(User& follower, bool noErrMsg = false); //When using this function, only send follower.

@@ -8,6 +8,12 @@ Status::Status(std::string text) {
 	this->text = text;
 }
 
+Status::Status(const Status& oldStatus)
+{
+	setTime();
+	this->text = oldStatus.getStatus();
+}
+
 //********************************************************************************
 
 //get funcs: allows access to the class attributes
@@ -39,6 +45,11 @@ void Status::setTime()
 //********************************************************************************
 
 //methods: 
+
+const bool Status::operator==(Status& other)
+{
+	return (text == other.getStatus());
+}
 
 //prints the status
 void Status::printStatus()
